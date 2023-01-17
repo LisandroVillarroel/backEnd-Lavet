@@ -26,7 +26,7 @@ const portada = require('./rutas/portada.ruta.js');
 
 const express = require('express');
 const propiedadesDb = require('./config/propiedades');
-const DB = require('./config/db');
+const DB = require('./config/db'); 
 
 // Iniciar DB
 DB(); 
