@@ -476,15 +476,19 @@ async function actualizarFichaEnvia(req,res) {
     // si encontro información reemplaza información
     try {
         let ficha_actualiza = req.body.fichas[0];
-
+        console.log('ficha Actualiza22222:',req.body)
+        console.log('ficha Actualiza1111:',ficha_actualiza)
         const fechaHora_envia_crea=new Date();
 
         req.body.seguimientoEstado.fechaHora_enviado=fechaHora_envia_crea;
         
         ficha_actualiza = Object.assign(ficha_actualiza,req.body);  // Object.assign( Asigna todas las variables y propiedades, devuelve el Objeto
+        console.log('ficha Actualiza:',ficha_actualiza)
         
         // queryModifica={usuarioModifica_id: '', estado:'Borrado'};
         const ficha_resp =await ficha.updateOne({_id: req.params.id},ficha_actualiza) 
+
+        console.log('ficha resp:',ficha_resp)
 
         respuesta = {
             error: false, 

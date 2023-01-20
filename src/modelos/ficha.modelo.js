@@ -295,11 +295,11 @@ const schemaFicha = new Schema({
                     type: String,
                     trim: true
                 },
-                resultado: {
+                unidad: {
                     type: String,
                     trim: true
                 },
-                unidad: {
+                resultado: {
                     type: String,
                     trim: true
                 },
@@ -319,6 +319,82 @@ const schemaFicha = new Schema({
                 type: String,
                 trim: true
             },
+        },
+        acth:{
+            resultado:[{
+                parametro: {
+                    type: String,
+                    trim: true
+                },
+                unidad: {
+                    type: String,
+                    trim: true
+                },
+                resultado: {
+                    type: String,
+                    trim: true
+                },
+                caninos: {
+                    type: String,
+                    trim: true
+                },
+                felinos: {
+                    type: String,
+                    trim: true
+                },
+                flag:{
+                    type: Boolean
+                },
+            }],
+            observaciones: {
+                type: String,
+                trim: true
+            },
+        },
+        analisisDeFluidos:{
+            liquido:  {
+                type: String,
+                trim: true
+            },
+        examenFisico:[{
+            parametro: {
+                type: String,
+                trim: true
+            },
+            resultado: {
+                type: String,
+                trim: true
+            },
+            flag:{
+                type: Boolean
+            },
+        }],
+        examenQuimico:[{
+            parametro: {
+                type: String,
+                trim: true
+            },
+            resultado: {
+                type: String,
+                trim: true
+            },
+            flag:{
+                type: Boolean
+            },
+        }],
+        examenCitologico:[{
+            parametro: {
+                type: String,
+                trim: true
+            },
+            resultado: {
+                type: String,
+                trim: true
+            },
+            flag:{
+                type: Boolean
+            },
+        }],
         }
 
     },

@@ -171,10 +171,46 @@ async function eliminarExamen(req,res) {
       }   
 }
 
+async function buscarTodosExamenSiNoExiste(req,res) {
+    try {
+        query={empresa_Id:req.params.idEmpresaLaboratorio,estado: {$ne:'Borrado'}};
+        const examenes = await examen.find(query).sort('descripcion');
+        console.log('query:',query);
+        console.log('examenes:',examenes);
+
+        let listaCodigoInternoExamen=[];
+    for (const item of examenes) {  
+        listaCodigoInternoExamen.push(item.codigoInterno);
+    }
+    console.log('lista:',listaCodigoInternoExamen);
+
+        query={empresa_Id:req.params.empresaId,codigoInterno: { $nin: listaCodigoInternoExamen},estado: {$ne:'Borrado'}};
+        const examenesOriginales = await examen.find(query).sort('descripcion');
+   console.log('EXAMENES NO ESTAN:',examenesOriginales);
+        respuesta = {
+            error: false, 
+            data: examenesOriginales,
+            codigo: 200, 
+            mensaje: 'ok'
+        };
+        return res.status(200).json(respuesta);
+    } catch(error) {
+        respuesta = {
+          error: true, 
+          data: '',
+          codigo: 500, 
+          mensaje: error
+         };
+        console.log(respuesta);
+        return res.status(200).json(respuesta);
+      }   
+}
 async function buscarTodosExamen(req,res) {
     try {
         query={empresa_Id:req.params.empresaId,estado: {$ne:'Borrado'}};
+        console.log('query busca todos:',query)
         const examenes = await examen.find(query).sort('descripcion');
+        console.log('buscarTodosExamen:',examenes);
         respuesta = {
             error: false, 
             data: examenes,
@@ -212,5 +248,5 @@ async function buscaId(req,res,next){
 }
 
 module.exports = {
-    crearExamen,actualizarExamen,buscarExamen,eliminarExamen,buscarTodosExamen,buscaId
+    crearExamen,actualizarExamen,buscarExamen,eliminarExamen,buscarTodosExamen,buscarTodosExamenSiNoExiste,buscaId
 }
