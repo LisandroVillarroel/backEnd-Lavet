@@ -13,44 +13,55 @@ var ISODate = require('isodate');
 var moment = require('moment-timezone');
 
 async function crearPropietario(req,res,next) {
-    console.log('pasoooo Propietario:',req.body);
-    if(req.body.fichaC.rutPropietario===''){             // Si trae información de la búsqueda anterior
-        return next();
-    }
-    try {
-        const newPropietario = {
-            rutPropietario:  req.body.fichaC.rutPropietario,
-            nombres: req.body.fichaC.nombrePropietario,
-            apellidoPaterno: '.',
-            apellidoMaterno: '.',
-            region:0,
-            comuna: 0,
-            direccion: '.',
-            telefono: 0,
-            email: '.',
-            usuarioCrea_id: req.body.usuarioCrea_id,
-            usuarioModifica_id: req.body.usuarioModifica_id
+    console.log('pasoooo Propietario:',req.body.fichaC);
+    console.log('valor body:',req.body);
+    if (req.body.fichaC!=undefined){  // Esto es porque la primera vez viene en blanco
+        if(req.body.fichaC.rutPropietario===''){             // Si trae información de la búsqueda anterior
+            return next();
         }
+        try {
+            const newPropietario = {
+                rutPropietario:  req.body.fichaC.rutPropietario,
+                nombres: req.body.fichaC.nombrePropietario,
+                apellidoPaterno: '.',
+                apellidoMaterno: '.',
+                region:0,
+                comuna: 0,
+                direccion: '.',
+                telefono: 0,
+                email: '.',
+                usuarioCrea_id: req.body.usuarioCrea_id,
+                usuarioModifica_id: req.body.usuarioModifica_id
+            }
 
-        let query={};
-        query={rutPropietario: req.body.fichaC.rutPropietario, estado: {$ne:'Borrado'}};
-        const fichasPropietario = await propietario.find(query)
-        console.log('fichasPropietario',newPropietario)
-        if(!fichasPropietario.length){ 
-            console.log('graba')
-             await new propietario(newPropietario).save();
+            let query={};
+            query={rutPropietario: req.body.fichaC.rutPropietario, estado: {$ne:'Borrado'}};
+            const fichasPropietario = await propietario.find(query)
+            console.log('fichasPropietario',newPropietario)
+            if(!fichasPropietario.length){ 
+                console.log('graba')
+                await new propietario(newPropietario).save();
+            }
+
+            return next();
+
+        } catch(error) {
+            respuesta = {
+                error: true, 
+                data: '',
+                codigo: 500, 
+                mensaje: error
+            };
+            return res.status(500).json(respuesta);
         }
-
-        return next();
-
-    } catch(error) {
+    }else{
         respuesta = {
             error: true, 
             data: '',
-            codigo: 500, 
-            mensaje: error
+            codigo: 200, 
+            mensaje: 'Es la primera vez que entra'
         };
-        return res.status(500).json(respuesta);
+        return res.status(200).json(respuesta);
     }
 }
 
@@ -69,23 +80,21 @@ async function crearFicha(req,res) {
     try {
         let parametroEmp= parametro;
         const fechaIngreso=new Date();
-
+console.log('req.body ficha:',req.body);
         req.body.seguimientoEstado.fechaHora_ingresado_crea=fechaIngreso;
         req.body.seguimientoEstado.fechaHora_ingresado_modifica=fechaIngreso;
         req.body.seguimientoEstado.fechaHora_recepcionado_crea=fechaIngreso;
       //  console.log('correlativo:',req.params.numCorrelativo);
-        console.log('paso1');
-        console.log('req.params.numCorrelativo:',req.params.numCorrelativo)
-        console.log('req.body.empresa.empresa_Id:',req.body.empresa.empresa_Id)
-        if (req.params.numCorrelativo==='1'){  // El 0 indica que es la primera vez que entra
+        console.log('req.params.numCorrelativo:',req.params.numCorrelativo);
+        console.log('req.body.empresa.empresa_Id:',req.body.empresa.empresa_Id);
+        if (req.params.numCorrelativo==='1'){  // El 0 indica que es la primera vez que entra por eso suma 1
         //    console.log('paso1');
             parametroEmp= await parametro.findOneAndUpdate({empresa_id:  req.body.empresa.empresa_Id},{ $inc: { numeroFicha:+1}}, {new: true})//  {new: true}  devuelve el documento
-        }else{
+        }else{//Este se ingrementa solo
           //  console.log('paso2');
           //  query={'empresa_id':req.body.empresa.empresa_Id,estado: {$ne:'Borrado'}};
           //  parametroEmp= await parametro.find(query)//  {new: true}  devuelve el documento
-          parametroEmp= await parametro.findOneAndUpdate({empresa_id:  req.body.empresa.empresa_Id},{ $inc: { numeroFicha:+0}}, {new: true})// mantiene el {new: true}  devuelve el documento
-            
+          parametroEmp= await parametro.findOneAndUpdate({empresa_id:  req.body.empresa.empresa_Id},{ $inc: { numeroFicha:+0}}, {new: true})// mantiene el {new: true}  devuelve el documento      
         }
         console.log('paso2');
         const ficha_resp = await new ficha(req.body).save();
@@ -96,7 +105,7 @@ async function crearFicha(req,res) {
        // console.log('parametroEmp.numeroFicha:',parametroEmp.numeroFicha);
        // console.log('req.params.numCorrelativo:',req.params.numCorrelativo);
        // console.log('numero concatenado:',parametroEmp.letra+parametroEmp.numeroFicha+req.params.numCorrelativo);
-        const update_resp = await ficha.updateOne({_id: ficha_resp._id},{  'fichaC.numeroFicha': parametroEmp.letra+parametroEmp.numeroFicha+req.params.numCorrelativo, 'fichaC.id_Ficha': parametroEmp.letra+parametroEmp.numeroFicha}, {new: true});
+       const update_resp = await ficha.updateOne({_id: ficha_resp._id},{  'fichaC.numeroFicha': parametroEmp.letra+parametroEmp.numeroFicha+req.params.numCorrelativo, 'fichaC.id_Ficha': parametroEmp.letra+parametroEmp.numeroFicha}, {new: true});
        // console.log('update:',update_resp);
         respuesta = {
             error: false, 

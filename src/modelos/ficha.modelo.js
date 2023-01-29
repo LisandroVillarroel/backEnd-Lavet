@@ -191,6 +191,482 @@ const schemaFicha = new Schema({
 
     formatoResultado:{
  
+        acth:{
+            resultado:[{
+                parametro: {
+                    type: String,
+                    trim: true
+                },
+                unidad: {
+                    type: String,
+                    trim: true
+                },
+                resultado: {
+                    type: String,
+                    trim: true
+                },
+                caninos: {
+                    type: String,
+                    trim: true
+                },
+                felinos: {
+                    type: String,
+                    trim: true
+                },
+                flagNegrilla:{
+                    type: Boolean
+                },
+            }],
+            observaciones: {
+                type: String,
+                trim: true
+            },
+        },
+        analisisDeFluidos:{
+            liquido:  {
+                type: String,
+                trim: true
+            },
+        examenFisico:[{
+            parametro: {
+                type: String,
+                trim: true
+            },
+            resultado: {
+                type: String,
+                trim: true
+            },
+            flagNegrilla:{
+                type: Boolean
+            },
+        }],
+        examenQuimico:[{
+            parametro: {
+                type: String,
+                trim: true
+            },
+            resultado: {
+                type: String,
+                trim: true
+            },
+            flag:{
+                type: Boolean
+            },
+        }],
+        examenCitologico:[{
+            parametro: {
+                type: String,
+                trim: true
+            },
+            resultado: {
+                type: String,
+                trim: true
+            },
+            flag:{
+                type: Boolean
+            },
+        }],
+        },
+        coprocultivo:{
+            resultado:[{
+                coprocultivo: {
+                    type: String,
+                    trim: true
+                },
+                resultado: {
+                    type: String,
+                    trim: true
+                },
+                flagNegrilla:{
+                    type: Boolean
+                },
+            }],
+        },
+        cortisol:{
+            resultado:[{
+                parametro: {
+                    type: String,
+                    trim: true
+                },
+                unidad: {
+                    type: String,
+                    trim: true
+                },
+                resultado: {
+                    type: String,
+                    trim: true
+                },
+                caninos: {
+                    type: String,
+                    trim: true
+                },
+                felinos: {
+                    type: String,
+                    trim: true
+                },
+                flagNegrilla:{
+                    type: Boolean
+                },
+            }],
+            observaciones: {
+                type: String,
+                trim: true
+            },
+        },
+        creatinKinasa:{
+            resultado:[{
+                parametro: {
+                    type: String,
+                    trim: true
+                },
+                unidad: {
+                    type: String,
+                    trim: true
+                },
+                resultado: {
+                    type: String,
+                    trim: true
+                },
+                caninos: {
+                    type: String,
+                    trim: true
+                },
+                felinos: {
+                    type: String,
+                    trim: true
+                },
+                flagNegrilla:{
+                    type: Boolean
+                },
+            }],
+            observaciones: {
+                type: String,
+                trim: true
+            },
+        },
+        cultivoCorrienteAntibiograma:{
+            resultadoCultivoCorriente:[{
+                cultivoCorriente: {
+                    type: String,
+                    trim: true
+                },
+                resultado: {
+                    type: String,
+                    trim: true
+                },
+                flagNegrilla:{
+                    type: Boolean
+                },
+            }],
+            antibiogramaTitulo: {
+                type: String,
+                trim: true
+            },
+            resultadoAntiBiograma:[{
+                antibiograma: {
+                    type: String,
+                    trim: true
+                },
+                resultado: {
+                    type: String,
+                    trim: true
+                },
+                flagNegrilla:{
+                    type: Boolean
+                },
+            }],
+        },
+        cultivoMicrologico:{
+            resultado:[{
+                nombre: {
+                    type: String,
+                    trim: true
+                },
+                resultado: {
+                    type: String,
+                    trim: true
+                },
+                flagNegrilla:{
+                    type: Boolean
+                },
+            }],
+        },
+        cultivoMicrobiologico:{
+            resultadoCultivoBacteorologico:[{
+                cultivoBacteorologico: {
+                    type: String,
+                    trim: true
+                },
+                resultado: {
+                    type: String,
+                    trim: true
+                },
+                flagNegrilla:{
+                    type: Boolean
+                },
+            }],
+            antibiogramaTitulo: {
+                type: String,
+                trim: true
+            },
+            resultadoAntiBiograma:[{
+                antibiograma: {
+                    type: String,
+                    trim: true
+                },
+                resultado: {
+                    type: String,
+                    trim: true
+                },
+                flagNegrilla:{
+                    type: Boolean
+                },
+            }],
+        },
+        directoDePeloYEscama:{
+            resultado:[{
+                directoDePeloYEscama: {
+                    type: String,
+                    trim: true
+                },
+                resultado: {
+                    type: String,
+                    trim: true
+                },
+                flagNegrilla:{
+                    type: Boolean
+                },
+            }],
+            resultadoFinal:[{
+                directoDePeloYEscama: {
+                    type: String,
+                    trim: true
+                },
+                resultado: {
+                    type: String,
+                    trim: true
+                },
+                flagNegrilla:{
+                    type: Boolean
+                },
+            }],
+        },
+        distemper:{
+            resultado:[{
+                nombre: {
+                    type: String,
+                    trim: true
+                },
+                resultado: {
+                    type: String,
+                    trim: true
+                },
+                flagNegrilla:{
+                    type: Boolean
+                },
+            }],
+        },
+        ehrlichia:{
+            resultado:[{
+                nombre: {
+                    type: String,
+                    trim: true
+                },
+                resultado: {
+                    type: String,
+                    trim: true
+                },
+                flagNegrilla:{
+                    type: Boolean
+                },
+            }],
+        },
+        electrolitos:{
+            resultado:[{
+                parametro: {
+                    type: String,
+                    trim: true
+                },
+                unidad: {
+                    type: String,
+                    trim: true
+                },
+                resultado: {
+                    type: String,
+                    trim: true
+                },
+                caninos: {
+                    type: String,
+                    trim: true
+                },
+                felinos: {
+                    type: String,
+                    trim: true
+                },
+                flagNegrilla:{
+                    type: Boolean
+                },
+            }],
+            observaciones: {
+                type: String,
+                trim: true
+            },
+        },
+        enzimas:{
+            resultado:[{
+                parametro: {
+                    type: String,
+                    trim: true
+                },
+                unidad: {
+                    type: String,
+                    trim: true
+                },
+                resultado: {
+                    type: String,
+                    trim: true
+                },
+                caninos: {
+                    type: String,
+                    trim: true
+                },
+                felinos: {
+                    type: String,
+                    trim: true
+                },
+                flagNegrilla:{
+                    type: Boolean
+                },
+            }],
+            observaciones: {
+                type: String,
+                trim: true
+            },
+        },
+        fenobarbital:{
+            resultado:[{
+                parametro: {
+                    type: String,
+                    trim: true
+                },
+                unidad: {
+                    type: String,
+                    trim: true
+                },
+                resultado: {
+                    type: String,
+                    trim: true
+                },
+                caninos: {
+                    type: String,
+                    trim: true
+                },
+                felinos: {
+                    type: String,
+                    trim: true
+                },
+                flagNegrilla:{
+                    type: Boolean
+                },
+            }],
+            observaciones: {
+                type: String,
+                trim: true
+            },
+        },
+        fructosamina:{
+            resultado:[{
+                parametro: {
+                    type: String,
+                    trim: true
+                },
+                unidad: {
+                    type: String,
+                    trim: true
+                },
+                resultado: {
+                    type: String,
+                    trim: true
+                },
+                caninos: {
+                    type: String,
+                    trim: true
+                },
+                felinos: {
+                    type: String,
+                    trim: true
+                },
+                flagNegrilla:{
+                    type: Boolean
+                },
+            }],
+            observaciones: {
+                type: String,
+                trim: true
+            },
+        },
+        glucosa:{
+            resultado:[{
+                parametro: {
+                    type: String,
+                    trim: true
+                },
+                unidad: {
+                    type: String,
+                    trim: true
+                },
+                resultado: {
+                    type: String,
+                    trim: true
+                },
+                caninos: {
+                    type: String,
+                    trim: true
+                },
+                felinos: {
+                    type: String,
+                    trim: true
+                },
+                flagNegrilla:{
+                    type: Boolean
+                },
+            }],
+            observaciones: {
+                type: String,
+                trim: true
+            },
+        },
+        hemoglobinaGlicocilada:{
+            resultado:[{
+                parametro: {
+                    type: String,
+                    trim: true
+                },
+                unidad: {
+                    type: String,
+                    trim: true
+                },
+                resultado: {
+                    type: String,
+                    trim: true
+                },
+                caninos: {
+                    type: String,
+                    trim: true
+                },
+                felinos: {
+                    type: String,
+                    trim: true
+                },
+                flagNegrilla:{
+                    type: Boolean
+                },
+            }],
+            observaciones: {
+                type: String,
+                trim: true
+            },
+        },
         hemograma:{
             serieRoja: {
                 IHemogramaSerieRoja:[{
@@ -258,8 +734,120 @@ const schemaFicha = new Schema({
             
            
         },
-        perfilBioquimico:{
+        hormonas:{
             resultado:[{
+                parametro: {
+                    type: String,
+                    trim: true
+                },
+                unidad: {
+                    type: String,
+                    trim: true
+                },
+                resultado: {
+                    type: String,
+                    trim: true
+                },
+                caninos: {
+                    type: String,
+                    trim: true
+                },
+                felinos: {
+                    type: String,
+                    trim: true
+                },
+                flagNegrilla:{
+                    type: Boolean
+                },
+            }],
+            observaciones: {
+                type: String,
+                trim: true
+            },
+        },
+        identificacionDeCalculo:{
+            examenFisico: {
+                type: String,
+                trim: true
+            },
+            resultado:[{
+                nombre: {
+                    type: String,
+                    trim: true
+                },
+                resultado: {
+                    type: String,
+                    trim: true
+                },
+                flagNegrilla:{
+                    type: Boolean
+                },
+            }],
+            conclusion: {
+                type: String,
+                trim: true
+            },
+        },
+        inmunoViralFelina:{
+            resultado:[{
+                nombre: {
+                    type: String,
+                    trim: true
+                },
+                resultado: {
+                    type: String,
+                    trim: true
+                },
+                flagNegrilla:{
+                    type: Boolean
+                },
+            }],
+        },
+        leucemiaViralFelina:{
+            resultado:[{
+                nombre: {
+                    type: String,
+                    trim: true
+                },
+                resultado: {
+                    type: String,
+                    trim: true
+                },
+                flagNegrilla:{
+                    type: Boolean
+                },
+            }],
+        },
+        micoplasma:{
+            resultado:[{
+                nombre: {
+                    type: String,
+                    trim: true
+                },
+                resultado: {
+                    type: String,
+                    trim: true
+                },
+                flagNegrilla:{
+                    type: Boolean
+                },
+            }],
+        },
+        orinaCompleta:{
+            examenFisico:[{
+                parametro: {
+                    type: String,
+                    trim: true
+                },
+                resultado: {
+                    type: String,
+                    trim: true
+                },
+                flagNegrilla:{
+                    type: Boolean
+                },
+            }],
+            examenQuimico:[{
                 parametro: {
                     type: String,
                     trim: true
@@ -272,6 +860,55 @@ const schemaFicha = new Schema({
                     type: String,
                     trim: true
                 },
+                flagNegrilla:{
+                    type: Boolean
+                },
+            }],
+            examenMicroscopico:[{
+                parametro: {
+                    type: String,
+                    trim: true
+                },
+                resultado: {
+                    type: String,
+                    trim: true
+                },
+                unidad: {
+                    type: String,
+                    trim: true
+                },
+                flagNegrilla:{
+                    type: Boolean
+                },
+            }],
+            examenSimbologia:[{
+                nombre: {
+                    type: String,
+                    trim: true
+                },
+                simbolo: {
+                    type: String,
+                    trim: true
+                },
+                flagNegrilla:{
+                    type: Boolean
+                },
+            }],
+        },
+        orinaFuncional:{
+            resultado:[{
+                parametro: {
+                    type: String,
+                    trim: true
+                },
+                unidad: {
+                    type: String,
+                    trim: true
+                },
+                resultado: {
+                    type: String,
+                    trim: true
+                },
                 caninos: {
                     type: String,
                     trim: true
@@ -280,7 +917,152 @@ const schemaFicha = new Schema({
                     type: String,
                     trim: true
                 },
-                flag:{
+                flagNegrilla:{
+                    type: Boolean
+                },
+            }],
+            observaciones: {
+                type: String,
+                trim: true
+            },
+        },
+        parasitologico:{
+            observaciones: {
+                type: String,
+                trim: true
+            },
+        },
+        parvovirus:{
+            resultado:[{
+                nombre: {
+                    type: String,
+                    trim: true
+                },
+                resultado: {
+                    type: String,
+                    trim: true
+                },
+                flagNegrilla:{
+                    type: Boolean
+                },
+            }],
+        },
+        perfilBioquimico:{
+            resultado:[{
+                parametro: {
+                    type: String,
+                    trim: true
+                },
+                unidad: {
+                    type: String,
+                    trim: true
+                },
+                resultado: {
+                    type: String,
+                    trim: true
+                },
+                caninos: {
+                    type: String,
+                    trim: true
+                },
+                felinos: {
+                    type: String,
+                    trim: true
+                },
+                flagNegrilla:{
+                    type: Boolean
+                },
+            }],
+            observaciones: {
+                type: String,
+                trim: true
+            },
+        },
+        perfilLipidico:{
+            resultado:[{
+                parametro: {
+                    type: String,
+                    trim: true
+                },
+                unidad: {
+                    type: String,
+                    trim: true
+                },
+                resultado: {
+                    type: String,
+                    trim: true
+                },
+                caninos: {
+                    type: String,
+                    trim: true
+                },
+                felinos: {
+                    type: String,
+                    trim: true
+                },
+                flagNegrilla:{
+                    type: Boolean
+                },
+            }],
+            observaciones: {
+                type: String,
+                trim: true
+            },
+        },
+        perfilRenal:{
+            resultado:[{
+                parametro: {
+                    type: String,
+                    trim: true
+                },
+                unidad: {
+                    type: String,
+                    trim: true
+                },
+                resultado: {
+                    type: String,
+                    trim: true
+                },
+                caninos: {
+                    type: String,
+                    trim: true
+                },
+                felinos: {
+                    type: String,
+                    trim: true
+                },
+                flagNegrilla:{
+                    type: Boolean
+                },
+            }],
+            observaciones: {
+                type: String,
+                trim: true
+            },
+        },
+        progesterona:{
+            resultado:[{
+                parametro: {
+                    type: String,
+                    trim: true
+                },
+                unidad: {
+                    type: String,
+                    trim: true
+                },
+                resultado: {
+                    type: String,
+                    trim: true
+                },
+                caninos: {
+                    type: String,
+                    trim: true
+                },
+                felinos: {
+                    type: String,
+                    trim: true
+                },
+                flagNegrilla:{
                     type: Boolean
                 },
             }],
@@ -311,7 +1093,7 @@ const schemaFicha = new Schema({
                     type: String,
                     trim: true
                 },
-                flag:{
+                flagNegrilla:{
                     type: Boolean
                 },
             }],
@@ -320,7 +1102,7 @@ const schemaFicha = new Schema({
                 trim: true
             },
         },
-        acth:{
+        sdma:{
             resultado:[{
                 parametro: {
                     type: String,
@@ -342,7 +1124,7 @@ const schemaFicha = new Schema({
                     type: String,
                     trim: true
                 },
-                flag:{
+                flagNegrilla:{
                     type: Boolean
                 },
             }],
@@ -351,52 +1133,69 @@ const schemaFicha = new Schema({
                 trim: true
             },
         },
-        analisisDeFluidos:{
-            liquido:  {
+        trigliceridos:{
+            resultado:[{
+                parametro: {
+                    type: String,
+                    trim: true
+                },
+                unidad: {
+                    type: String,
+                    trim: true
+                },
+                resultado: {
+                    type: String,
+                    trim: true
+                },
+                caninos: {
+                    type: String,
+                    trim: true
+                },
+                felinos: {
+                    type: String,
+                    trim: true
+                },
+                flagNegrilla:{
+                    type: Boolean
+                },
+            }],
+            observaciones: {
                 type: String,
                 trim: true
             },
-        examenFisico:[{
-            parametro: {
+        },
+        urocultivo:{
+            resultadoCultivoCorriente:[{
+                cultivoCorriente: {
+                    type: String,
+                    trim: true
+                },
+                resultado: {
+                    type: String,
+                    trim: true
+                },
+                flagNegrilla:{
+                    type: Boolean
+                },
+            }],
+            antibiogramaTitulo: {
                 type: String,
                 trim: true
             },
-            resultado: {
-                type: String,
-                trim: true
-            },
-            flag:{
-                type: Boolean
-            },
-        }],
-        examenQuimico:[{
-            parametro: {
-                type: String,
-                trim: true
-            },
-            resultado: {
-                type: String,
-                trim: true
-            },
-            flag:{
-                type: Boolean
-            },
-        }],
-        examenCitologico:[{
-            parametro: {
-                type: String,
-                trim: true
-            },
-            resultado: {
-                type: String,
-                trim: true
-            },
-            flag:{
-                type: Boolean
-            },
-        }],
-        }
-
+            resultadoAntiBiograma:[{
+                antibiograma: {
+                    type: String,
+                    trim: true
+                },
+                resultado: {
+                    type: String,
+                    trim: true
+                },
+                flagNegrilla:{
+                    type: Boolean
+                },
+            }],
+        },
     },
     datoArchivo:{
         nombreArchivo: {

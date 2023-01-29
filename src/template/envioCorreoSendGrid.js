@@ -19,11 +19,11 @@ console.log('email dato:',dato)
         subject: dato.envioEmail.asunto + ' ' + dato.nombreExamen.toUpperCase(),
         //text: "cuerpo 11111",
         html: `
-        <table border="0" cellpadding="0" cellspacing="0" width="600px" background-color="#2d3436" bgcolor="#2d3436">
+        <table border="0" cellpadding="0" cellspacing="0" width="600px"  >
             <tr height="200px">  
                 <td bgcolor="" width="600px">
-                    <h1 style="color: #fff; text-align:center">${dato.envioEmail.tituloCuerpo}</h1>
-                    <p  style="color: #fff; text-align:center">
+                    <h1  text-align:center">${dato.envioEmail.tituloCuerpo}</h1>
+                    <p   text-align:center">
                         <span style="color: #e84393">${dato.nombreExamen}</span> 
                         ${dato.envioEmail.tituloCuerpoMedio}
                     </p>
