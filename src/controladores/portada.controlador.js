@@ -9,9 +9,13 @@ async function buscaTotalxEstadosLab(req,res) {
     let solicitado=0;
     let recepcionado=0;
 
+    const ano_= new Date().getFullYear();
+    const mes_= new Date().getMonth()+1;
+    const dia_= new Date().getDate();
+
     try {
-       
-        query={empresa_Id:req.params.idEmpresa, estado: {$ne:'Borrado'}};
+       // Rescata todos los demas, menos el estado Enviado, yaque son demasiados
+        query={empresa_Id:req.params.idEmpresa,estadoFicha: {$ne:'Enviado'}, estado: {$ne:'Borrado'}};
 
         const valorEstadosLab = await ficha.aggregate([ 
             {
@@ -30,16 +34,38 @@ async function buscaTotalxEstadosLab(req,res) {
         for (i = 0; i < valorEstadosLab.length; i++) {
             console.log('valor:',valorEstadosLab[i]._id.estadoFicha);     
             console.log('valor total:',valorEstadosLab[i].total);  
-            if (valorEstadosLab[i]._id.estadoFicha=="Enviado")
-                enviado=valorEstadosLab[i].total;
+          //  if (valorEstadosLab[i]._id.estadoFicha=="Enviado")
+          //      enviado=valorEstadosLab[i].total;
             if (valorEstadosLab[i]._id.estadoFicha=="Ingresado")
                 ingresado=valorEstadosLab[i].total;
             if (valorEstadosLab[i]._id.estadoFicha=="Solicitado")
                 solicitado=valorEstadosLab[i].total;
             if (valorEstadosLab[i]._id.estadoFicha=="Recepcionado")
                 recepcionado=valorEstadosLab[i].total;
+            } 
 
-
+            //Esta query busca los enviados del dia actual para mostrarlo en el panel
+        query={empresa_Id:req.params.idEmpresa, ano:parseInt(ano_),mes:parseInt(mes_),dia:parseInt(dia_), estadoFicha:'Enviado',estado: {$ne:'Borrado'}};
+        console.log('query enviado:',query)
+        const valorEstadoCliEnviado = await ficha.aggregate([ 
+            {
+                $project:
+                  {
+                    ano: { $year: "$seguimientoEstado.fechaHora_enviado" },
+                    mes: { $month: "$seguimientoEstado.fechaHora_enviado" },
+                    dia: { $dayOfMonth: "$seguimientoEstado.fechaHora_enviado" },
+                    empresa_Id:"$empresa.empresa_Id",
+                    estadoFicha:"$estadoFicha",
+                    estado:"$estado"
+                  }
+            },
+            { $match:query}, 
+            { $group:{ _id:{"estadoFicha":"$estadoFicha"},total: { $sum: 1 } } 
+        }])
+        console.log('resultado enviado:',valorEstadoCliEnviado)
+        if ( valorEstadoCliEnviado.length>0) {  
+            console.log('recibido:',valorEstadoCliEnviado[0].total)
+            enviado=valorEstadoCliEnviado[0].total;
             } 
 
         let registro={
