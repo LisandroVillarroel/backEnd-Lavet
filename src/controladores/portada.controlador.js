@@ -71,7 +71,7 @@ async function buscaTotalxEstadosLab(req,res) {
         let registro={
             "Enviado":enviado,
             "Ingresado":ingresado,
-            "Solicitado":solicitado,
+            "Solicitado":0,//solicitado,
             "Recepcionado":recepcionado
         }
         console.log('registro:',registro)
