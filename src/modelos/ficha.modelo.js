@@ -376,7 +376,7 @@ const schemaFicha = new Schema({
                 },
             }],
         },
-        cultivoMicrologico:{
+        cultivoMicologico:{
             resultado:[{
                 nombre: {
                     type: String,
@@ -668,8 +668,8 @@ const schemaFicha = new Schema({
             },
         },
         hemograma:{
-            serieRoja: {
-                IHemogramaSerieRoja:[{
+            serieRoja: [
+                {
                     parametro: {
                         type: String,
                         trim: true  
@@ -690,10 +690,12 @@ const schemaFicha = new Schema({
                         type: String,
                         trim: true  
                     },
+                    flagNegrilla:{
+                        type: Boolean
+                    },
                 }],
-            },
-            serieBlanca:{
-                IHemogramaSerieBlanca:[{
+            serieBlanca:[
+                {
                     parametro: {
                         type: String,
                         trim: true  
@@ -714,23 +716,26 @@ const schemaFicha = new Schema({
                         type: String,
                         trim: true  
                     },
+                    flagNegrilla:{
+                        type: Boolean
+                    },
                 }],
-            },
             total: {
                 type: Number
             },
-            eritrocitos: {
-                type: String,
-                trim: true  
-            },
-            leucocitos: {
-                type: String,
-                trim: true  
-            },
-            plaquetas: {
-                type: String,
-                trim: true  
-            },
+            observaciones:[{
+                nombre: {
+                    type: String,
+                    trim: true
+                },
+                resultado: {
+                    type: String,
+                    trim: true
+                },
+                flagNegrilla:{
+                    type: Boolean
+                },
+            }]
             
            
         },
