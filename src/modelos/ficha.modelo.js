@@ -781,7 +781,7 @@ const schemaFicha = new Schema({
                     trim: true
                 },
                 resultado: {
-                    type: String,
+                    type: Boolean,
                     trim: true
                 },
                 flagNegrilla:{
@@ -1170,8 +1170,8 @@ const schemaFicha = new Schema({
             },
         },
         urocultivo:{
-            resultadoCultivoCorriente:[{
-                cultivoCorriente: {
+            resultadoUrocultivo:[{
+                urocultivo: {
                     type: String,
                     trim: true
                 },
