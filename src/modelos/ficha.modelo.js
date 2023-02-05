@@ -437,12 +437,12 @@ const schemaFicha = new Schema({
                     type: Boolean
                 },
             }],
-            resultadoFinal:[{
-                directoDePeloYEscama: {
+            resultadoSimbologia:[{
+                nombre: {
                     type: String,
                     trim: true
                 },
-                resultado: {
+                simbolo: {
                     type: String,
                     trim: true
                 },
