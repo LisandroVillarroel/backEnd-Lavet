@@ -850,6 +850,62 @@ async function buscarTodosFichaPorFechaVet(req,res) {
         return res.status(500).json(respuesta);
       }   
 }
+
+
+
+async function buscarPacientes(req,res) {
+    try {
+        query={runPropietario:req.params.runPropietario,estadoFicha:{$ne:'Borrado'},estado: {$ne:'Borrado'}};
+            
+        console.log('query ficha:',query);
+        const fichas = await ficha.find(query).sort('nombrePaciente');
+
+        const pacientesDePropietario = await ficha.aggregate([ 
+            {
+                $project:
+                  {
+                    runPropietario:"$fichaC.rutPropietario",
+                    nombrePaciente: "$fichaC.nombrePaciente",
+                    sexo: "$fichaC.sexo",
+                    idEspecie: "$fichaC.especie.idEspecie",
+                    idRaza: "$fichaC.raza.idRaza",
+                    estadoFicha:"$estadoFicha",
+                    estado:"$estado"
+                    
+                  }
+            },
+            { $match:query}, 
+            { $group:{ _id:{nombrePaciente:"$nombrePaciente", sexoPaciente:"$sexo", idEspecie:"$idEspecie",idRaza:"$idRaza"}} 
+        }])
+
+        console.log('paciente Inicial:',pacientesDePropietario);
+
+        let registro=[];
+        for (i = 0; i < pacientesDePropietario.length; i++) {
+              registro.push({"nombre":pacientesDePropietario[i]._id.nombrePaciente,"sexo":pacientesDePropietario[i]._id.sexoPaciente,
+              "idEspecie":pacientesDePropietario[i]._id.idEspecie,"idRaza":pacientesDePropietario[i]._id.idRaza});            
+        }
+       
+        console.log('paciente:',registro);
+        respuesta = {
+            error: false, 
+            data: registro,
+            codigo: 200, 
+            mensaje: 'ok'
+        };
+        return res.status(200).json(respuesta);
+    } catch(error) {
+        respuesta = {
+          error: true, 
+          data: '',
+          codigo: 500, 
+          mensaje: error
+         };
+        console.log(respuesta);
+        return res.status(500).json(respuesta);
+      }   
+}
+
 //next pasa a la siguiente función
 
  // next pasa a la siguiente función
@@ -868,5 +924,5 @@ async function buscaId(req,res,next){
 }
 
 module.exports = {
-    envioCorreoSendGrid,crearPropietario,crearFicha,envioCorreo,envioCorreoClienteFinal,envioCorreoSolicitudCliente,actualizarFicha,actualizarFichaEnvia,actualizarFichaCorreoClienteFinal,buscarFicha,eliminarFicha,buscarTodosFicha,buscarTodosFichaPorFecha,buscarTodosFichaVet,buscarTodosFichaPorFechaVet,buscaId
+    envioCorreoSendGrid,crearPropietario,crearFicha,envioCorreo,envioCorreoClienteFinal,envioCorreoSolicitudCliente,actualizarFicha,actualizarFichaEnvia,actualizarFichaCorreoClienteFinal,buscarFicha,eliminarFicha,buscarTodosFicha,buscarTodosFichaPorFecha,buscarTodosFichaVet,buscarTodosFichaPorFechaVet,buscarPacientes,buscaId
 }

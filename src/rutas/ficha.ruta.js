@@ -18,6 +18,8 @@ module.exports = (router) => {
     router.post('/envioExamenCorreoClienteFinal/:ficha_id', permiso,Fichas.envioCorreoClienteFinal);  // Envia correo a Cliente Final
     router.post('/envioCorreoSolicitudCliente/:id', permiso,Fichas.envioCorreoSolicitudCliente);  // Envia correo de lña solicitud realizada por Cliente(Veterinaria)
     router.post('/pruebaSendgrid', permiso, upload_(),Fichas.envioCorreoSendGrid);      // PruebaSendgrid
+
+    router.get('/paciente/:runPropietario', permiso, Fichas.buscarPacientes);
  //   router.post('/envioExamenCorreo/:ficha_id', permiso,Fichas.envioCorreo);
     //router.post('/fichaSubeArchivo/:empresa_id/:rutEmpresa/:nombreExamen/:numFicha/:ficha_id', permiso, upload_(),Fichas.subeArchivo);
     

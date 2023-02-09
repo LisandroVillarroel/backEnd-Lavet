@@ -502,9 +502,6 @@ async function buscaVentasPorExamenes(req,res) {
            registro[index].series[1].value=valorVentaPorExamenActual[a].valorExamen;
           
         }
-       
-       
-      
    }
 
  
