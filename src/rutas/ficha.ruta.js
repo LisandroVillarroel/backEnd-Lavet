@@ -7,14 +7,14 @@ const uploadFtp_ = require('../middelware/multerFtp2');
 
 
 const path = require('path');
-
+/*
 //Esta función guarda el mismo archivo en local y en el storage
 async function multiUpload(req, res, next) {
     await upload_(req, res, next)
     await uploadFtp_(req, res, next);
     next();
 }
-
+*/
 module.exports = (router) => {
     router.post('/ficha/:numCorrelativo',  Fichas.crearPropietario, Fichas.crearFicha);
     router.put('/ficha/:id',permiso, Fichas.crearPropietario,Fichas.buscaId, Fichas.actualizarFicha);
@@ -26,7 +26,7 @@ module.exports = (router) => {
     router.get('/fichaTodoPorFecha/:empresaOrigen/:estadoFicha/:usuario/:fechaInicio/:fechaFin/:tipoPermiso/:idUsuarioAsignado', permiso, Fichas.buscarTodosFichaPorFecha);
     router.get('/fichaTodoVet/:empresaOrigen/:estadoFicha/:usuario', permiso, Fichas.buscarTodosFichaVet);
     router.get('/fichaTodoPorFechaVet/:empresaOrigen/:estadoFicha/:usuario/:fechaInicio/:fechaFin', permiso, Fichas.buscarTodosFichaPorFechaVet);
-    router.post('/fichaSubeArchivo/:ficha_id', permiso, multiUpload,Fichas.envioCorreo,(req,res)=>{
+    router.post('/fichaSubeArchivo/:ficha_id', permiso, upload_(),Fichas.envioCorreo,(req,res)=>{
         console.log('elimina:');
        // res.send('ok');
     });      // Envía correo a Veterinaria
