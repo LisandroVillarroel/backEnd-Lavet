@@ -1,10 +1,4 @@
 const ficha = require('../modelos/ficha.modelo');
-const empresa = require('../modelos/empresa.modelo');
-const cliente = require('../modelos/cliente.modelo');
-const parametro = require('../modelos/parametro.modelo');
-const propietario = require('../modelos/propietario.modelo'); 
-
-
 
 var ISODate = require('isodate');
 //const moment = require('moment');
@@ -138,7 +132,7 @@ async function buscarTodosFacturaFicha(req,res) {
         }
 
   
-        console.log('query ficha:',query);
+       // console.log('query ficha:',query);
         const fichas = await ficha.find(query).sort('nombrePaciente');
         respuesta = {
             error: false, 
@@ -420,7 +414,7 @@ async function buscarTodosFacturaFichaetalle(req,res) {
 
 
 
-      console.log('query ficha:',query);
+      //console.log('query ficha:',query);
       const fichas = await ficha.find(query).sort('fichaC.id_Ficha');
       console.log('ficha:',fichas);
       respuesta = {
@@ -459,7 +453,7 @@ async function buscarTodosFacturaFichaetallePorFactura(req,res) {
 
 
 
-      console.log('query ficha:',query);
+      //console.log('query ficha:',query);
       const fichas = await ficha.find(query).sort('fichaC.id_Ficha');
       console.log('ficha:',fichas);
       respuesta = {

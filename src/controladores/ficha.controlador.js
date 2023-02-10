@@ -4,17 +4,19 @@ const cliente = require('../modelos/cliente.modelo');
 const parametro = require('../modelos/parametro.modelo');
 const propietario = require('../modelos/propietario.modelo'); 
 
-const mailer = require('./../template/envioCorreoSendGrid')
-const mailerClienteFinal = require('../template/envioCorreoClienteFinalSendGrid')
-const mailerRecepcionSolicitudEmpresa = require('./../template/envioCorreoRecepcionSolicitudEmpresaSendGrid')
+const mailer = require('./../template/envioCorreoSendGrid');
+const mailerClienteFinal = require('../template/envioCorreoClienteFinalSendGrid');
+const mailerRecepcionSolicitudEmpresa = require('./../template/envioCorreoRecepcionSolicitudEmpresaSendGrid');
+const elimina= require('./../middelware/elimina');
+
 
 var ISODate = require('isodate');
 //const moment = require('moment');
 var moment = require('moment-timezone');
 
 async function crearPropietario(req,res,next) {
-    console.log('pasoooo Propietario:',req.body.fichaC);
-    console.log('valor body:',req.body);
+   // console.log('pasoooo Propietario:',req.body.fichaC);
+   // console.log('valor body:',req.body);
     if (req.body.fichaC!=undefined){  // Esto es porque la primera vez viene en blanco
         if(req.body.fichaC.rutPropietario===''){             // Si trae información de la búsqueda anterior
             return next();
@@ -127,7 +129,7 @@ console.log('req.body ficha:',req.body);
         return res.status(500).json(respuesta);
     }   
 }
-
+/*
 async function envioCorreoSendGrid(req,res) {
     let mailOptions = {
         envioEmail:{
@@ -158,11 +160,18 @@ async function envioCorreoSendGrid(req,res) {
     }
     );
 }
-
+*/
 
 async function envioCorreo(req,res) {
     
     try {
+    //    var storage = multer.memoryStorage()
+    //    var upload = multer({ storage: storage })
+
+        
+
+    //    console.log(upload.single('file').toString("base64"));
+
         let query={};
 
         query={_id: req.params.ficha_id, estado: {$ne:'Borrado'}};
@@ -175,7 +184,7 @@ async function envioCorreo(req,res) {
      //   console.log('envia email empresa:',empresa_);
         if (empresa_!=null){
       //      console.log('paso email 1');
-            console.log('paso email 111',empresa_[0]);
+        //    console.log('paso email 111',empresa_[0]);
             let mailOptions = {
                 envioEmail:{
                     emailEnvio: empresa_[0].envioEmail.emailEnvio,
@@ -191,8 +200,10 @@ async function envioCorreo(req,res) {
                 nombreExamen: ficha_[0].fichaC.examen.nombre,
                 numFicha: ficha_[0].fichaC.numeroFicha
               };
-              console.log('paso email 2222',mailOptions);
-            mailer.enviar_mail(mailOptions, function (err,info) {
+            //  console.log('paso email 2222',mailOptions);
+            let respuesta = await mailer.enviar_mail(mailOptions, function (err,info) {
+                console.log('pasoooooooooo',err)
+                console.log('passoooooooo2',info)
                 if(err)
                     {
                         respuesta = {
@@ -205,6 +216,19 @@ async function envioCorreo(req,res) {
                     }
             }
             );
+         //   await elimina.elimina('../../public/pdfs/'+mailOptions.rutEmpresa.slice(0, -2)+'/'+ mailOptions.numFicha+'.pdf');
+            console.log('despues de enviar', respuesta)
+            console.log('despues de enviar codigo', respuesta.codigo)
+            if(respuesta.codigo==500){
+                respuesta = {
+                    error: true, 
+                    data: '',
+                    codigo: 401, 
+                    mensaje: 'Se grabó el Exámen, hay Error! No se envió el Email'
+                };
+                return res.status(200).json(respuesta)
+            }
+           
         }
         respuesta = {
             error: false, 
@@ -225,6 +249,10 @@ async function envioCorreo(req,res) {
         return res.status(500).json(respuesta);
     }   
 }
+
+
+
+
 
 async function envioCorreoClienteFinal(req,res) {
     
@@ -257,7 +285,7 @@ async function envioCorreoClienteFinal(req,res) {
                 numFicha: ficha_[0].fichaC.numeroFicha
               };
               console.log('paso email 2',mailOptions);
-              mailerClienteFinal.enviar_mail_cliente_Final(mailOptions, function (err,info) {
+               mailerClienteFinal.enviar_mail_cliente_Final(mailOptions, function (err,info) {
                 if(err)
                     {
                         respuesta = {
@@ -270,6 +298,8 @@ async function envioCorreoClienteFinal(req,res) {
                     }
             }
             );
+
+            
         }
         respuesta = {
             error: false, 
@@ -485,19 +515,19 @@ async function actualizarFichaEnvia(req,res) {
     // si encontro información reemplaza información
     try {
         let ficha_actualiza = req.body.fichas[0];
-        console.log('ficha Actualiza22222:',req.body)
-        console.log('ficha Actualiza1111:',ficha_actualiza)
+       // console.log('ficha Actualiza22222:',req.body)
+       // console.log('ficha Actualiza1111:',ficha_actualiza)
         const fechaHora_envia_crea=new Date();
 
         req.body.seguimientoEstado.fechaHora_enviado=fechaHora_envia_crea;
         
         ficha_actualiza = Object.assign(ficha_actualiza,req.body);  // Object.assign( Asigna todas las variables y propiedades, devuelve el Objeto
-        console.log('ficha Actualiza:',ficha_actualiza)
+      //  console.log('ficha Actualiza:',ficha_actualiza)
         
         // queryModifica={usuarioModifica_id: '', estado:'Borrado'};
         const ficha_resp =await ficha.updateOne({_id: req.params.id},ficha_actualiza) 
 
-        console.log('ficha resp:',ficha_resp)
+      //  console.log('ficha resp:',ficha_resp)
 
         respuesta = {
             error: false, 
@@ -687,7 +717,7 @@ async function buscarTodosFicha(req,res) {
             }
             
         /*}*/
-        console.log('query ficha:',query);
+       // console.log('query ficha:',query);
         const fichas = await ficha.find(query).sort('nombrePaciente');
         respuesta = {
             error: false, 
@@ -747,7 +777,7 @@ async function buscarTodosFichaPorFecha(req,res) {
                 }
             }
        /*}*/
-        console.log('query ficha:',query);
+      //  console.log('query ficha:',query);
         const fichas = await ficha.find(query).sort('nombrePaciente');
         respuesta = {
             error: false, 
@@ -781,7 +811,7 @@ async function buscarTodosFichaVet(req,res) {
                 query={'fichaC.cliente.idCliente':req.params.empresaOrigen,estado: {$ne:'Borrado'}};
             }
         
-        console.log('query ficha:',query);
+       // console.log('query ficha:',query);
         const fichas = await ficha.find(query).sort('nombrePaciente');
         respuesta = {
             error: false, 
@@ -857,7 +887,7 @@ async function buscarPacientes(req,res) {
     try {
         query={runPropietario:req.params.runPropietario,estadoFicha:{$ne:'Borrado'},estado: {$ne:'Borrado'}};
             
-        console.log('query ficha:',query);
+      //  console.log('query ficha:',query);
         const fichas = await ficha.find(query).sort('nombrePaciente');
 
         const pacientesDePropietario = await ficha.aggregate([ 
@@ -924,5 +954,5 @@ async function buscaId(req,res,next){
 }
 
 module.exports = {
-    envioCorreoSendGrid,crearPropietario,crearFicha,envioCorreo,envioCorreoClienteFinal,envioCorreoSolicitudCliente,actualizarFicha,actualizarFichaEnvia,actualizarFichaCorreoClienteFinal,buscarFicha,eliminarFicha,buscarTodosFicha,buscarTodosFichaPorFecha,buscarTodosFichaVet,buscarTodosFichaPorFechaVet,buscarPacientes,buscaId
+    crearPropietario,crearFicha,envioCorreo,envioCorreoClienteFinal,envioCorreoSolicitudCliente,actualizarFicha,actualizarFichaEnvia,actualizarFichaCorreoClienteFinal,buscarFicha,eliminarFicha,buscarTodosFicha,buscarTodosFichaPorFecha,buscarTodosFichaVet,buscarTodosFichaPorFechaVet,buscarPacientes,buscaId
 }
