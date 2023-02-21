@@ -83,7 +83,15 @@ const schemaEmpresa = new Schema({
         required: false,
         trim: true
     },
-    nombreLogo: {        //Menu asociado 
+    nombreLogo: {        
+        type: String,
+        trim: true
+    },
+    nombreLogoCabeceraExamen: {        
+        type: String,
+        trim: true
+    },
+    footerExamen: {        
         type: String,
         trim: true
     },

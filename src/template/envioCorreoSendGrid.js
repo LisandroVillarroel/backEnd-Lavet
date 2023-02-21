@@ -41,7 +41,7 @@ this.enviar_mail = (dato) => {
             { // Use a URL as an attachment
 
               content: attachment,
-              filename: dato.nombreExamen+'-'+dato.numFicha+'.pdf',
+              filename: dato.nombreExamen+'-'+dato.nombrePaciente+'-'+dato.numFicha+'.pdf',
               type: "application/pdf",
               disposition: "attachment"
           }

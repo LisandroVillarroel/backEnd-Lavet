@@ -82,33 +82,61 @@ async function crearFicha(req,res) {
     try {
         let parametroEmp= parametro;
         const fechaIngreso=new Date();
-console.log('req.body ficha:',req.body);
+        console.log('req.body ficha:',req.body);
         req.body.seguimientoEstado.fechaHora_ingresado_crea=fechaIngreso;
         req.body.seguimientoEstado.fechaHora_ingresado_modifica=fechaIngreso;
         req.body.seguimientoEstado.fechaHora_recepcionado_crea=fechaIngreso;
-      //  console.log('correlativo:',req.params.numCorrelativo);
-        console.log('req.params.numCorrelativo:',req.params.numCorrelativo);
-        console.log('req.body.empresa.empresa_Id:',req.body.empresa.empresa_Id);
-        if (req.params.numCorrelativo==='1'){  // El 0 indica que es la primera vez que entra por eso suma 1
-        //    console.log('paso1');
-            parametroEmp= await parametro.findOneAndUpdate({empresa_id:  req.body.empresa.empresa_Id},{ $inc: { numeroFicha:+1}}, {new: true})//  {new: true}  devuelve el documento
-        }else{//Este se ingrementa solo
-          //  console.log('paso2');
-          //  query={'empresa_id':req.body.empresa.empresa_Id,estado: {$ne:'Borrado'}};
-          //  parametroEmp= await parametro.find(query)//  {new: true}  devuelve el documento
-          parametroEmp= await parametro.findOneAndUpdate({empresa_id:  req.body.empresa.empresa_Id},{ $inc: { numeroFicha:+0}}, {new: true})// mantiene el {new: true}  devuelve el documento      
-        }
-        console.log('paso2');
-        const ficha_resp = await new ficha(req.body).save();
-        console.log('paso3');
-       // console.log('parametro:',parametroEmp);
-       // console.log('ficha_resp._id:',ficha_resp._id);
-       // console.log('parametroEmp.letra:',parametroEmp.letra);
-       // console.log('parametroEmp.numeroFicha:',parametroEmp.numeroFicha);
-       // console.log('req.params.numCorrelativo:',req.params.numCorrelativo);
-       // console.log('numero concatenado:',parametroEmp.letra+parametroEmp.numeroFicha+req.params.numCorrelativo);
-       const update_resp = await ficha.updateOne({_id: ficha_resp._id},{  'fichaC.numeroFicha': parametroEmp.letra+parametroEmp.numeroFicha+req.params.numCorrelativo, 'fichaC.id_Ficha': parametroEmp.letra+parametroEmp.numeroFicha}, {new: true});
-       // console.log('update:',update_resp);
+
+        let ficha_=ficha;
+        let ficha_resp
+        let correlativo=0;
+        parametroEmp= await parametro.findOneAndUpdate({empresa_id:  req.body.empresa.empresa_Id},{ $inc: { numeroFicha:+1}}, {new: true})
+        for (var i = 0; i < req.body.datoFichaDetalleEnviaExamen.length; i++) {
+     /*       if (i==='1'){  // El 0 indica que es la primera vez que entra por eso suma 1
+            //    console.log('paso1');
+                parametroEmp= await parametro.findOneAndUpdate({empresa_id:  req.body.empresa.empresa_Id},{ $inc: { numeroFicha:+1}}, {new: true})//  {new: true}  devuelve el documento
+            }else{//Este se ingrementa solo
+                parametroEmp= await parametro.findOneAndUpdate({empresa_id:  req.body.empresa.empresa_Id},{ $inc: { numeroFicha:+0}}, {new: true})// mantiene el {new: true}  devuelve el documento      
+            }
+*/
+            correlativo++;
+            ficha_={
+                    fichaC:  {
+                        id_Ficha: parametroEmp.letra+parametroEmp.numeroFicha,
+                        numeroFicha: parametroEmp.letra+parametroEmp.numeroFicha+'-'+correlativo,
+                        cliente: req.body.fichaC.cliente,
+                        rutPropietario: req.body.fichaC.rutPropietario,
+                        nombrePropietario: req.body.fichaC.nombrePropietario,
+                        nombrePaciente: req.body.fichaC.nombrePaciente,
+                        edadPaciente: req.body.fichaC.edadPaciente,
+                        especie: req.body.fichaC.especie,
+                        raza: req.body.fichaC.raza,
+                        sexo: req.body.fichaC.sexo,
+                        doctorSolicitante: req.body.fichaC.doctorSolicitante,
+                        correoClienteFinal: req.body.fichaC.correoClienteFinal,
+                        examen: req.body.datoFichaDetalleEnviaExamen[i].examen,
+                        validador: req.body.datoFichaDetalleEnviaExamen[i].validadorAsignado,
+                  },
+                    usuarioAsignado: req.body.datoFichaDetalleEnviaExamen[i].usuarioAsignado,
+          
+                    empresa: req.body.empresa,
+                    ingresadoPor:req.body.ingresadoPor,
+                    facturacion:req.body.facturacion,
+                    estadoFicha: req.body.estadoFicha_,
+                    seguimientoEstado:req.body.seguimientoEstado,
+                    usuarioCrea_id: req.body.usuarioCrea_id,
+                    usuarioModifica_id: req.body.usuarioModifica_id
+                    
+                  };
+
+                  ficha_resp = await new ficha(ficha_).save();
+            }
+
+
+            
+
+       //     const update_resp = await ficha.updateOne({_id: ficha_resp._id},{  'fichaC.numeroFicha': parametroEmp.letra+parametroEmp.numeroFicha+req.params.numCorrelativo, 'fichaC.id_Ficha': parametroEmp.letra+parametroEmp.numeroFicha}, {new: true});
+      
         respuesta = {
             error: false, 
             data: ficha_resp,
@@ -198,7 +226,8 @@ async function envioCorreo(req,res) {
                 correoRecepcionCliente: ficha_[0].fichaC.cliente.correoRecepcionCliente,
                 rutEmpresa: empresa_[0].rutEmpresa,
                 nombreExamen: ficha_[0].fichaC.examen.nombre,
-                numFicha: ficha_[0].fichaC.numeroFicha
+                numFicha: ficha_[0].fichaC.numeroFicha,
+                nombrePaciente: ficha_[0].fichaC.nombrePaciente
               };
             //  console.log('paso email 2222',mailOptions);
             let respuesta = await mailer.enviar_mail(mailOptions, function (err,info) {
@@ -887,7 +916,7 @@ async function buscarPacientes(req,res) {
     try {
         query={runPropietario:req.params.runPropietario,estadoFicha:{$ne:'Borrado'},estado: {$ne:'Borrado'}};
             
-      //  console.log('query ficha:',query);
+        console.log('query ficha:',query);
         const fichas = await ficha.find(query).sort('nombrePaciente');
 
         const pacientesDePropietario = await ficha.aggregate([ 

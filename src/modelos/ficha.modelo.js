@@ -269,7 +269,7 @@ const schemaFicha = new Schema({
         },
         coprocultivo:{
             resultado:[{
-                coprocultivo: {
+                nombre: {
                     type: String,
                     trim: true
                 },
@@ -345,8 +345,12 @@ const schemaFicha = new Schema({
             },
         },
         cultivoCorrienteAntibiograma:{
-            resultadoCultivoCorriente:[{
-                cultivoCorriente: {
+            resultadoTitulo: {
+                type: String,
+                trim: true
+            },
+            resultado:[{
+                nombre: {
                     type: String,
                     trim: true
                 },
@@ -391,6 +395,7 @@ const schemaFicha = new Schema({
                 },
             }],
         },
+        /*
         cultivoMicrobiologico:{
             resultadoCultivoBacteorologico:[{
                 cultivoBacteorologico: {
@@ -423,9 +428,10 @@ const schemaFicha = new Schema({
                 },
             }],
         },
+        */
         directoDePeloYEscama:{
             resultado:[{
-                directoDePeloYEscama: {
+                nombre: {
                     type: String,
                     trim: true
                 },
@@ -636,7 +642,7 @@ const schemaFicha = new Schema({
                 trim: true
             },
         },
-        hemoglobinaGlicocilada:{
+        hemoglobinaGlicosilada:{
             resultado:[{
                 parametro: {
                     type: String,
@@ -720,7 +726,7 @@ const schemaFicha = new Schema({
                         type: Boolean
                     },
                 }],
-            total: {
+            totalSerieBlanca: {
                 type: Number
             },
             observaciones:[{
@@ -1170,8 +1176,12 @@ const schemaFicha = new Schema({
             },
         },
         urocultivo:{
+            resultadoTitulo:{
+                type: String,
+                trim: true
+            },
             resultadoUrocultivo:[{
-                urocultivo: {
+                nombre: {
                     type: String,
                     trim: true
                 },
@@ -1188,7 +1198,7 @@ const schemaFicha = new Schema({
                 trim: true
             },
             resultadoAntiBiograma:[{
-                antibiograma: {
+                nombre: {
                     type: String,
                     trim: true
                 },
@@ -1246,7 +1256,15 @@ const schemaFicha = new Schema({
             type: String,
             trim: true
         },
-        
+        nombreLogoCabeceraExamen: {
+            type: String,
+            trim: true
+        },
+        footerExamen: {
+            type: String,
+            required: true,
+            trim: true
+        },
     },
     ingresadoPor:{
         tipoEmpresa: {

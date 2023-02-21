@@ -16,7 +16,7 @@ async function multiUpload(req, res, next) {
 }
 */
 module.exports = (router) => {
-    router.post('/ficha/:numCorrelativo',  Fichas.crearPropietario, Fichas.crearFicha);
+    router.post('/ficha',  Fichas.crearPropietario, Fichas.crearFicha);
     router.put('/ficha/:id',permiso, Fichas.crearPropietario,Fichas.buscaId, Fichas.actualizarFicha);
     router.put('/fichaEnvia/:id',permiso, Fichas.crearPropietario,Fichas.buscaId, Fichas.actualizarFichaEnvia);
     router.put('/fichaCorreo/:id',permiso,Fichas.buscaId, Fichas.actualizarFichaCorreoClienteFinal);
