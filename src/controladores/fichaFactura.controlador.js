@@ -51,7 +51,6 @@ async function actualizarFichaNumFactura(req,res) {
        };
       res.status(200).json(respuesta)
     }else{
-        console.log('pasoooooooo')
         query={'empresa.empresa_Id':req.body.empresaOrigen,'fichaC.cliente.idCliente':req.body.idCliente,'facturacion.estadoFacturacion':'AFacturacion','facturacion.fechaFacturacion': new Date(req.body.fechaFacturacion),estado: {$ne:'Borrado'}};
         console.log('dato:', query)
 

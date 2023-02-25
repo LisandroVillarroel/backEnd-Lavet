@@ -7,7 +7,7 @@ const fs = require("fs");
 require('dotenv').config();
 
 this.enviar_mail_cliente_Final = (dato) => {
-    const  pathToAttachment =   path_.join(__dirname,'../../public/pdfs/'+dato.rutEmpresa.slice(0, -2)+'/'+ dato.numFicha+'.pdf')
+    const  pathToAttachment =   path_.join(__dirname,'../../public/pdfs/interno/'+dato.rutEmpresa.slice(0, -2)+'/'+ dato.numFicha+'.pdf')
 console.log('email dato:',dato)
 
   const attachment = fs.readFileSync(pathToAttachment).toString("base64");

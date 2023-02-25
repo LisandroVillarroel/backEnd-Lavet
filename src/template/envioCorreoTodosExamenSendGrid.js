@@ -7,47 +7,59 @@ const fs = require("fs");
 
 
 
-this.enviar_mail = (dato) => {
+this.enviar_mail = (dato,ficha_) => {
   try{
+    let adjuntos=[];
+    let attachment
+    let pathToAttachment
+    let archivoPdf
+    let internoExterno=''
+    const nombre_cliente=dato.envioEmail.nombreCliente
+    const saludo=mostrarSaludo()
 
-    const  pathToAttachment =   path_.join(__dirname,'../../public/pdfs/interno/'+dato.rutEmpresa.slice(0, -2)+'/'+ dato.numFicha+'.pdf');
-  //console.log('email dato:',dato)
+    console.log('envia ficha_Sendgrid:',ficha_)
+    console.log('ficha_[a].fichaC.numeroFicha', ficha_[0].fichaC.numeroFicha)
+    for (let a = 0; a < ficha_.length; a++) {
+      if(ficha_[a].fichaC.examen.internoExterno=="Interno")
+        internoExterno="interno";
+      else
+        internoExterno="externo";
+      
+      pathToAttachment =   path_.join(__dirname,'../../public/pdfs/'+dato.rutEmpresa.slice(0, -2)+'/'+internoExterno+'/'+ ficha_[a].fichaC.numeroFicha+'.pdf');
 
-    const attachment = fs.readFileSync(pathToAttachment).toString("base64");
+      attachment = fs.readFileSync(pathToAttachment).toString("base64");
+
+      archivoPdf={
+      "content": attachment,
+      "filename": ficha_[a].fichaC.examen.nombre+'-'+dato.nombrePaciente+'-'+ficha_[a].fichaC.numeroFicha+'.pdf',
+      "type": "application/pdf",
+      "disposition": 'attachment'
+      }
+      adjuntos.push(archivoPdf)
+    }
+    
+  console.log('email adjuntos:',adjuntos)
+
+    const tituloCuerpo= dato.envioEmail.tituloCuerpo.replace("nombre_cliente_",nombre_cliente).replace("saludo_",saludo);
     const msg = {
           to: dato.correoRecepcionCliente, //"lisandrovillarroell@gmail.com",
           from: "No Responder LAVET<no-reply.lavet@sidetec.cl>",
-          subject: dato.envioEmail.asunto + ' ' + dato.nombreExamen.toUpperCase(),
+          subject: dato.envioEmail.asunto + ' ' + dato.id_Ficha+' '+ dato.nombrePaciente.toUpperCase(),
           //text: "cuerpo 11111",
           html: `
           <table border="0" cellpadding="0" cellspacing="0" width="600px"  >
               <tr height="200px">  
                   <td bgcolor="" width="600px">
-                      <h1  text-align:center">${dato.envioEmail.tituloCuerpo}</h1>
-                      <p   text-align:center">
-                          <span style="color: #e84393">${dato.nombreExamen}</span> 
-                          ${dato.envioEmail.tituloCuerpoMedio}
-                      </p>
+                     ${tituloCuerpo}
                   </td>
               </tr>
-              <tr bgcolor="#fff">
-                  <td style="text-align:center">
-                      <p style="color: #000">${dato.envioEmail.tituloCuerpoPie}</p>
-                  </td>
-              </tr>
+              
           </table>
   `,
-          attachments: [
-            { // Use a URL as an attachment
-
-              content: attachment,
-              filename: dato.nombreExamen+'-'+dato.nombrePaciente+'-'+dato.numFicha+'.pdf',
-              type: "application/pdf",
-              disposition: "attachment"
-          }
-        ]
+          attachments: adjuntos
     };
-      //console.log('msg:',msg)
+
+    //  console.log('msg:',msg)
    /* sgMail.send(msg).then(result => {
       console.log("Sent email",result);
       
@@ -109,5 +121,26 @@ this.enviar_mail = (dato) => {
   };
   console.log('ultima envia:',respuesta);
   return respuesta;
+}
+
+function mostrarSaludo(){
+ 
+  const fecha = new Date(); 
+  const hora = fecha.getHours();
+  let texto='';
+ 
+  if(hora >= 0 && hora < 12){
+    texto = "Buenos Días";
+  }
+ 
+  if(hora >= 12 && hora < 18){
+    texto = "Buenas Tardes";
+  }
+ 
+  if(hora >= 18 && hora < 24){
+    texto = "Buenas Noches";
+  }
+ return texto;
+ 
 }
 module.export = this;

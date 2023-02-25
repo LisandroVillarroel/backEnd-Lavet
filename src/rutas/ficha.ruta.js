@@ -1,9 +1,9 @@
 const Fichas = require('../controladores/ficha.controlador.js');
 const permiso = require('../middelware/permiso');
-const uploadFtp = require('../middelware/multerFtp');
-const upload = require('../middelware/multer');
-const upload_ = require('../middelware/multer2');
-const uploadFtp_ = require('../middelware/multerFtp2');
+const upload_ = require('../middelware/multer');
+const uploadArchivos_ = require('../middelware/multerMultiple');
+const uploadArchivosExterno_= require('../middelware/multerMultipleExterno');
+
 
 
 const path = require('path');
@@ -18,7 +18,7 @@ async function multiUpload(req, res, next) {
 module.exports = (router) => {
     router.post('/ficha',  Fichas.crearPropietario, Fichas.crearFicha);
     router.put('/ficha/:id',permiso, Fichas.crearPropietario,Fichas.buscaId, Fichas.actualizarFicha);
-    router.put('/fichaEnvia/:id',permiso, Fichas.crearPropietario,Fichas.buscaId, Fichas.actualizarFichaEnvia);
+    router.put('/fichaAnaliza/:id',permiso, Fichas.crearPropietario,Fichas.buscaId, Fichas.actualizarFichaAnaliza);
     router.put('/fichaCorreo/:id',permiso,Fichas.buscaId, Fichas.actualizarFichaCorreoClienteFinal);
     router.get('/ficha/:id',permiso, Fichas.buscaId, Fichas.buscarFicha);
     router.delete('/ficha/:id/:idUsu',permiso, Fichas.buscaId, Fichas.eliminarFicha);
@@ -46,8 +46,17 @@ module.exports = (router) => {
     */
     //router.post('/fichaDescargaArchivo', permiso, Fichas.subeArchivo);
     router.post('/fichaDescargaArchivo', (req,res,next)=>{
-        filepath = path.join(__dirname,'../../public/pdfs/'+ req.body.filename) ;
+        filepath = path.join(__dirname,'../../public/pdfs/'+ req.body.filename) ; 
         console.log('ruta:',filepath);
         res.sendFile(filepath);
-    });
+    }); 
+
+    router.get('/armaConsultaXfichaParaEnvio/:empresaOrigen', permiso, Fichas.armaConsultaXfichaParaEnvio);
+    router.get('/detalleXfichaParaEnvio/:empresaOrigen/:id_Ficha', permiso, Fichas.detalleXfichaParaEnvio);
+    router.post('/envioCorreoTodosExamen/:rutEmpresaDirectorio/:id_Ficha/:empresaOrigen/:usuario/:correoCliente', permiso, uploadArchivos_(),Fichas.envioCorreoTodosExamenes,(req,res)=>{console.log('file req:',req.files);});      // Envía correo a Cliente
+    router.post('/envioCorreoUnicoExamenes/:_id/:rutEmpresaDirectorio/:numeroFicha/:empresaOrigen/:usuario/:correoCliente', permiso, uploadArchivos_(),Fichas.envioCorreoUnicoExamenes,(req,res)=>{console.log('file req:',req.files);});      // Envía correo a Cliente
+    router.post('/subePdfExamenExterno/:_id/:rutEmpresaDirectorio/:id_Ficha/:numeroFicha/:empresaOrigen/:usuario', permiso, uploadArchivosExterno_(),Fichas.cambiaEstadoFicha,(req,res)=>{console.log('file req:',req.files);});      // SubeArchivo Externo
+    
+
+    
 }

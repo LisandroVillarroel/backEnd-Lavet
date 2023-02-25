@@ -113,6 +113,11 @@ const schemaFicha = new Schema({
                 required: true,
                 trim: true
             },
+            numeroFormatoInterno: {
+                type: Number,
+                required: true,
+                trim: true
+            },
             codigoInterno: {
                 type: Number,
                 required: true,
@@ -121,10 +126,6 @@ const schemaFicha = new Schema({
             nombre: {
                 type: String,
                 required: true,
-                trim: true  
-            },
-            nombreExamen: {
-                type: String,
                 trim: true  
             },
             precioValor: {
@@ -137,6 +138,14 @@ const schemaFicha = new Schema({
             },
             diasPreparacion: {
                 type: Number,
+                trim: true  
+            },
+            internoExterno: {
+                type: String,
+                trim: true  
+            },
+            categoria: {
+                type: String,
                 trim: true  
             },
         },
@@ -1354,6 +1363,14 @@ const schemaFicha = new Schema({
             trim: true  
         },
         fechaHora_recepcionado_modifica: { 
+            type: Date
+        },
+
+        usuarioAnalizado_id: {
+            type: String,
+            trim: true  
+        },
+        fechaHora_analizado: { 
             type: Date
         },
 

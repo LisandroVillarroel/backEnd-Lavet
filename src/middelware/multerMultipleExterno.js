@@ -1,46 +1,39 @@
 'use strict'
 
  const multer = require('multer');
- const path = require("path");
  const fs = require('fs');
- const ficha = require('../modelos/ficha.modelo');
 
- function  upload_(){ 
+ function  uploadArchivosExterno_(){ 
     try{
-       console.log('ppaso')
+       
 
         const storage = multer.diskStorage({
             
             destination: async function (req, file, cb) {
-
-                let query={};
-        
-                query={_id: req.params.ficha_id, estado: {$ne:'Borrado'}};
-                const ficha_ = await ficha.find(query)
-                console.log('query:', query)
+                console.log('ppaso Rut empresa',req.params.rutEmpresaDirectorio)
                 //Verifica si Existe el directorio---Ojo también toma en cuenta el nombre archico como directorio
-                console.log('rut empresa a:',ficha_[0].empresa.rutEmpresa.slice(0, -2))
-                if (!fs.existsSync('public/pdfs/'+ficha_[0].empresa.rutEmpresa.slice(0, -2))){
-                    fs.mkdir('public/pdfs/'+ficha_[0].empresa.rutEmpresa.slice(0, -2), (error)=>{
+
+                if (!fs.existsSync('public/pdfs/'+req.params.rutEmpresaDirectorio)){
+                    fs.mkdir('public/pdfs/'+req.params.rutEmpresaDirectorio, (error)=>{
                         if (error){
                             return res.status(401).send({ message: error.message})
                         }
-                    });
-                    fs.mkdir('public/pdfs/'+ficha_[0].empresa.rutEmpresa.slice(0, -2)+'/interno', (error)=>{
+                    })
+                    fs.mkdir('public/pdfs/'+req.params.rutEmpresaDirectorio+'/externo', (error)=>{
                         if (error){
                             return res.status(401).send({ message: error.message})
                         }
                     })
                 }else{
-                    if (!fs.existsSync('public/pdfs/'+ficha_[0].empresa.rutEmpresa.slice(0, -2)+'/interno')){
-                        fs.mkdir('public/pdfs/'+ficha_[0].empresa.rutEmpresa.slice(0, -2)+'/interno', (error)=>{
+                    if (!fs.existsSync('public/pdfs/'+req.params.rutEmpresaDirectorio+'/externo')){
+                        fs.mkdir('public/pdfs/'+req.params.rutEmpresaDirectorio+'/externo', (error)=>{
                             if (error){
                                 return res.status(401).send({ message: error.message})
                             }
                         })
                     }
                 }
-                cb(null, 'public/pdfs/'+ficha_[0].empresa.rutEmpresa.slice(0, -2)+'/interno')
+                cb(null, 'public/pdfs/'+req.params.rutEmpresaDirectorio+'/externo')
               },           
             filename: function (req, file, cb) {
 
@@ -50,11 +43,11 @@
             }
         })
         console.log('paso 2 unload')
-        const upload = multer({ storage: storage }).single('file');
+        const upload = multer({ storage: storage }).array('file');
         console.log('paso 2 unload2:',upload)
         return upload
     }catch(error){
         console.log('error',error);
     }
 }
-module.exports = upload_
+module.exports = uploadArchivosExterno_

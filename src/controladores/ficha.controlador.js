@@ -10,6 +10,8 @@ const mailerRecepcionSolicitudEmpresa = require('./../template/envioCorreoRecepc
 const elimina= require('./../middelware/elimina');
 
 
+const mailSendgridTodosExamen = require('./../template/envioCorreoTodosExamenSendGrid');
+
 var ISODate = require('isodate');
 //const moment = require('moment');
 var moment = require('moment-timezone');
@@ -82,7 +84,6 @@ async function crearFicha(req,res) {
     try {
         let parametroEmp= parametro;
         const fechaIngreso=new Date();
-        console.log('req.body ficha:',req.body);
         req.body.seguimientoEstado.fechaHora_ingresado_crea=fechaIngreso;
         req.body.seguimientoEstado.fechaHora_ingresado_modifica=fechaIngreso;
         req.body.seguimientoEstado.fechaHora_recepcionado_crea=fechaIngreso;
@@ -122,7 +123,7 @@ async function crearFicha(req,res) {
                     empresa: req.body.empresa,
                     ingresadoPor:req.body.ingresadoPor,
                     facturacion:req.body.facturacion,
-                    estadoFicha: req.body.estadoFicha_,
+                    estadoFicha: req.body.estadoFicha,
                     seguimientoEstado:req.body.seguimientoEstado,
                     usuarioCrea_id: req.body.usuarioCrea_id,
                     usuarioModifica_id: req.body.usuarioModifica_id
@@ -131,8 +132,6 @@ async function crearFicha(req,res) {
 
                   ficha_resp = await new ficha(ficha_).save();
             }
-
-
             
 
        //     const update_resp = await ficha.updateOne({_id: ficha_resp._id},{  'fichaC.numeroFicha': parametroEmp.letra+parametroEmp.numeroFicha+req.params.numCorrelativo, 'fichaC.id_Ficha': parametroEmp.letra+parametroEmp.numeroFicha}, {new: true});
@@ -154,7 +153,7 @@ async function crearFicha(req,res) {
             mensaje: error
         };
         console.log(respuesta);
-        return res.status(500).json(respuesta);
+        return res.status(200).json(respuesta);
     }   
 }
 /*
@@ -209,6 +208,8 @@ async function envioCorreo(req,res) {
         query={_id: ficha_[0].empresa.empresa_Id, estado: {$ne:'Borrado'}};
         const empresa_ = await empresa.find(query)
 
+
+
      //   console.log('envia email empresa:',empresa_);
         if (empresa_!=null){
       //      console.log('paso email 1');
@@ -223,7 +224,7 @@ async function envioCorreo(req,res) {
                     tituloCuerpoMedio: empresa_[0].envioEmail.tituloCuerpoMedio,
                     tituloCuerpoPie: empresa_[0].envioEmail.tituloCuerpoPie
                 },
-                correoRecepcionCliente: ficha_[0].fichaC.cliente.correoRecepcionCliente,
+                correoRecepcionCliente: req.params.correoCliente,
                 rutEmpresa: empresa_[0].rutEmpresa,
                 nombreExamen: ficha_[0].fichaC.examen.nombre,
                 numFicha: ficha_[0].fichaC.numeroFicha,
@@ -253,12 +254,13 @@ async function envioCorreo(req,res) {
                     error: true, 
                     data: '',
                     codigo: 401, 
-                    mensaje: 'Se grabó el Exámen, hay Error! No se envió el Email'
+                    mensaje: 'Hay Error! No se envió el Email'
                 };
                 return res.status(200).json(respuesta)
             }
            
         }
+
         respuesta = {
             error: false, 
             data: '',
@@ -278,9 +280,6 @@ async function envioCorreo(req,res) {
         return res.status(500).json(respuesta);
     }   
 }
-
-
-
 
 
 async function envioCorreoClienteFinal(req,res) {
@@ -307,7 +306,7 @@ async function envioCorreoClienteFinal(req,res) {
                     tituloCuerpoMedio: cliente_[0].empresa[0].envioEmail.tituloCuerpoMedio,
                     tituloCuerpoPie: cliente_[0].empresa[0].envioEmail.tituloCuerpoPie
                 },
-                correoClienteFinal: ficha_[0].fichaC.correoClienteFinal,
+                correoClienteFinal: req.params.correoCliente,
                 rutEmpresa: ficha_[0].empresa.rutEmpresa,
               //  rutEmpresa: cliente_[0].rutCliente,
                 nombreExamen: ficha_[0].fichaC.examen.nombre,
@@ -346,7 +345,7 @@ async function envioCorreoClienteFinal(req,res) {
             mensaje: error
         };
         console.log(respuesta);
-        return res.status(500).json(respuesta);
+        return res.status(200).json(respuesta);
     }   
 }
 
@@ -485,6 +484,10 @@ async function actualizarFicha(req,res) {
             req.body.seguimientoEstado.fechaHora_recepcionado_modifica= fechaActual;
         }
         
+        if (req.body.fichas[0].estadoFicha=='Analizado'){  // Pregunta por la información Actual, antes que se modifique
+            req.body.seguimientoEstado.fechaHora_analizado= fechaActual;
+        }
+
         if (req.body.fichas[0].estadoFicha=='Solicitado'){  // Pregunta por la información Actual, antes que se modifique
             req.body.seguimientoEstado.fechaHora_recepcionado_crea= fechaActual;
             req.body.seguimientoEstado.fechaHora_recepcionado_modifica= fechaActual;
@@ -518,7 +521,7 @@ async function actualizarFicha(req,res) {
 
 }
 
-async function actualizarFichaEnvia(req,res) {
+async function actualizarFichaAnaliza(req,res) {
 
     if(req.body.error){ // Si biene un error de la busueda anterior
         respuesta = {
@@ -528,7 +531,7 @@ async function actualizarFichaEnvia(req,res) {
             mensaje: req.body.error
            };
             console.log(respuesta);
-            return res.status(500).json(respuesta);
+            return res.status(200).json(respuesta);
     }
 
     if(!req.body.fichas){             // Si no trae información de la búsqueda anterior
@@ -546,9 +549,10 @@ async function actualizarFichaEnvia(req,res) {
         let ficha_actualiza = req.body.fichas[0];
        // console.log('ficha Actualiza22222:',req.body)
        // console.log('ficha Actualiza1111:',ficha_actualiza)
-        const fechaHora_envia_crea=new Date();
+        const fechaHora_analizado_crea=new Date();
 
-        req.body.seguimientoEstado.fechaHora_enviado=fechaHora_envia_crea;
+        req.body.seguimientoEstado.fechaHora_analizado=fechaHora_analizado_crea;
+        req.body.fichaC.examen.internoExterno='Interno';
         
         ficha_actualiza = Object.assign(ficha_actualiza,req.body);  // Object.assign( Asigna todas las variables y propiedades, devuelve el Objeto
       //  console.log('ficha Actualiza:',ficha_actualiza)
@@ -564,9 +568,6 @@ async function actualizarFichaEnvia(req,res) {
             codigo: 200, 
             mensaje: 'ok'
         };
-       
-        
-     //   console.log('respuesta envia',);
         res.status(200).json(respuesta)
     } catch(error) {
         respuesta = {
@@ -578,7 +579,6 @@ async function actualizarFichaEnvia(req,res) {
           console.log(respuesta);
           return res.status(error.codigo).json(respuesta);
       }   
-
 }
 
 
@@ -911,7 +911,6 @@ async function buscarTodosFichaPorFechaVet(req,res) {
 }
 
 
-
 async function buscarPacientes(req,res) {
     try {
         query={runPropietario:req.params.runPropietario,estadoFicha:{$ne:'Borrado'},estado: {$ne:'Borrado'}};
@@ -965,6 +964,370 @@ async function buscarPacientes(req,res) {
       }   
 }
 
+
+async function armaConsultaXfichaParaEnvio(req,res) {
+    let registro=[];
+    try {
+        
+      //  Esta consulta trae las Solicitudes que tienen algún examen ingresado
+  
+        query={empresa_Id:req.params.empresaOrigen,estadoFicha:'Analizado',estado: {$ne:'Borrado'}};
+    console.log('query envio:',query)
+        const fichas = await ficha.aggregate([ 
+          {
+              $project:
+              {
+                empresa_Id:"$empresa.empresa_Id",
+                estadoFicha:"$estadoFicha",
+                id_Ficha:"$fichaC.id_Ficha",
+                nombreFantasia: "$fichaC.cliente.nombreFantasia",
+                nombrePaciente:"$fichaC.nombrePaciente",
+              }
+          },
+          { $match:query}, 
+          { $group:{ _id:{"id_Ficha":"$id_Ficha","nombreFantasia":"$nombreFantasia","nombrePaciente":"$nombrePaciente"},
+                  "cantidadExamen" : {"$sum" : 1},
+                }
+              },
+              { $sort: { "_id.id_Ficha":1 } }
+      ]);
+  
+
+      console.log('ficha Envioooo:',fichas)
+      let idFichasString='';
+      for (a = 0; a < fichas.length; a++) {
+        idFichasString=idFichasString+fichas[a]._id.id_Ficha+','
+      
+  
+        nuevoObjeto={
+            "id_Ficha":fichas[a]._id.id_Ficha,
+            "nombreFantasia":fichas[a]._id.nombreFantasia,
+            "nombrePaciente":fichas[a]._id.nombrePaciente,
+            "cantidadExamen":fichas[a].cantidadExamen,
+            "cantidadSolicitadosEstados":0,
+            "cantidadIngresadosRecepcionadosEstados":0,
+            "cantidadEnviadosEstados":0
+        }
+        registro.push(nuevoObjeto);
+      }
+      idFichasString=idFichasString.substring(0, idFichasString.length - 1);
+      console.log('idFichasString:',idFichasString);
+      console.log('registro:',registro);
+      let arr = idFichasString.split(','); 
+
+      query={empresa_Id:req.params.empresaOrigen,id_Ficha:{$in:arr},estadoFicha: {$ne:'Analizado'},estado: {$ne:'Borrado'}};
+      console.log('query:',query);
+      const fichas_ = await ficha.aggregate([ 
+        {
+            $project:
+            {
+              empresa_Id:"$empresa.empresa_Id",
+              estadoFicha:"$estadoFicha",
+              id_Ficha:"$fichaC.id_Ficha"
+            }
+        },
+        { $match:query}, 
+        { $group:{ _id:{"id_Ficha":"$id_Ficha","estadoFicha":"$estadoFicha"},
+                "cantidadExamen" : {"$sum" : 1},
+              }
+            },
+            { $sort: { "_id.id_Ficha":1 } }
+        ]);
+        console.log('fichas_:',fichas_);
+        for (a = 0; a < registro.length; a++) {
+            idFichasString=idFichasString+','
+
+            canSolicitados=await fichas_.find(valor=> valor._id.id_Ficha === registro[a].id_Ficha && valor._id.estadoFicha=='Solicitado');
+            console.log('ingresado Solicitado:',canSolicitados);
+            if(canSolicitados!=undefined)
+                registro[a].cantidadSolicitadosEstados=canSolicitados.cantidadExamen;
+
+            canIngresadosRecepcionados=await fichas_.find(valor=> valor._id.id_Ficha === registro[a].id_Ficha && (valor._id.estadoFicha=='Ingresado' ||valor._id.estadoFicha=='Recepcionado'));
+            console.log('ingresado Recepcionado:',canIngresadosRecepcionados);
+            if(canIngresadosRecepcionados!=undefined)
+                registro[a].cantidadIngresadosRecepcionadosEstados=canIngresadosRecepcionados.cantidadExamen;
+
+            canEnviados=await fichas_.find(valor=> valor._id.id_Ficha === registro[a].id_Ficha && valor._id.estadoFicha=='Enviado' );
+            console.log('Enviado:',canEnviados);
+            if(canEnviados!=undefined)
+                registro[a].cantidadEnviadosEstados=canEnviados.cantidadExamen;
+
+
+          }
+
+      console.log('registro:',registro)
+        respuesta = {
+            error: false, 
+            data: registro,
+            codigo: 200, 
+            mensaje: 'ok'
+        };
+        return res.status(200).json(respuesta);
+    } catch(error) {
+        respuesta = {
+          error: true, 
+          data: '',
+          codigo: 500, 
+          mensaje: error
+         };
+        console.log(respuesta);
+        return res.status(200).json(respuesta);
+      }   
+  }
+  
+async function detalleXfichaParaEnvio(req,res) {
+    try {
+
+        query={'empresa.empresa_Id':req.params.empresaOrigen,'fichaC.id_Ficha':req.params.id_Ficha,estado: {$ne:'Borrado'}};
+console.log('query',query)
+        const fichas = await ficha.find(query).sort('estadoFicha');
+        console.log('fichas',fichas)
+        respuesta = {
+            error: false, 
+            data: fichas,
+            codigo: 200, 
+            mensaje: 'ok'
+        };
+        return res.status(200).json(respuesta);
+    } catch(error) {
+        respuesta = {
+          error: true, 
+          data: '',
+          codigo: 500, 
+          mensaje: error
+         };
+        console.log(respuesta);
+        return res.status(200).json(respuesta);
+      }   
+}
+
+async function envioCorreoTodosExamenes(req,res) {
+    
+    try {
+        const  arr = 'Analizado,Enviado'.split(','); 
+        let query={};
+        query={'empresa.empresa_Id':req.params.empresaOrigen,"fichaC.id_Ficha": req.params.id_Ficha, estadoFicha:{$in:arr}, estado: {$ne:'Borrado'}};
+
+        const ficha_ = await ficha.find(query)
+        console.log('Envio ficha_', ficha_)
+
+
+        query={_id: ficha_[0].empresa.empresa_Id, estado: {$ne:'Borrado'}};
+        const empresa_ = await empresa.find(query)
+
+        if (empresa_!=null){
+
+            let mailOptions = {
+                envioEmail:{
+                    emailEnvio: empresa_[0].envioEmail.emailEnvio,
+                    password: empresa_[0].envioEmail.password,
+                    nombreDesde: empresa_[0].envioEmail.nombreDesde,
+                    asunto: empresa_[0].envioEmail.asunto,
+                    tituloCuerpo: empresa_[0].envioEmail.tituloCuerpo,
+                    tituloCuerpoMedio: empresa_[0].envioEmail.tituloCuerpoMedio,
+                    tituloCuerpoPie: empresa_[0].envioEmail.tituloCuerpoPie
+                },
+                correoRecepcionCliente: req.params.correoCliente,
+                rutEmpresa: empresa_[0].rutEmpresa,
+                nombrePaciente: ficha_[0].fichaC.nombrePaciente,
+                id_Ficha: ficha_[0].fichaC.id_Ficha
+              };
+            //  console.log('paso email 2222',mailOptions);
+            let respuesta = await mailSendgridTodosExamen.enviar_mail(mailOptions,ficha_, function (err,info) {
+                if(err)
+                    {
+                        respuesta = {
+                            error: true, 
+                            data: '',
+                            codigo: 500, 
+                            mensaje: error
+                        };
+                        return res.status(200).json(respuesta);
+                    }
+            }
+            );
+         //   await elimina.elimina('../../public/pdfs/'+mailOptions.rutEmpresa.slice(0, -2)+'/'+ mailOptions.numFicha+'.pdf');
+            console.log('despues de enviar', respuesta)
+            console.log('despues de enviar codigo', respuesta.codigo)
+            if(respuesta.codigo==500){
+                respuesta = {
+                    error: true, 
+                    data: '',
+                    codigo: 401, 
+                    mensaje: 'Hay Error! No se envió el Email'
+                };
+                return res.status(200).json(respuesta)
+            }
+           
+        }else{
+            respuesta = {
+                error: false, 
+                data: '',
+                codigo: 500, 
+                mensaje: 'Faltan Datos Empresa'
+            };
+            console.log(respuesta);
+            res.status(200).json(respuesta)
+        }
+        //Cambia etado después de enviar el correo
+        const fechaHora_enviado_crea=new Date();
+        for (let a = 0; a < ficha_.length; a++) {
+            console.log('paso graba envio',req.params.usuario)
+            queryModifica={estadoFicha: 'Enviado', 
+            'seguimientoEstado.usuarioEnviado_id':req.params.usuario,
+            'seguimientoEstado.fechaHora_enviado':fechaHora_enviado_crea,
+            'fichaC.examen.internoExterno':'Interno'};
+            await ficha.updateOne({_id: ficha_[a]._id},queryModifica);
+        } 
+
+        respuesta = {
+            error: false, 
+            data: '',
+            codigo: 200, 
+            mensaje: 'ok'
+        };
+        console.log(respuesta);
+        res.status(200).json(respuesta)
+    } catch(error) {
+        respuesta = {
+            error: true, 
+            data: '',
+            codigo: 500, 
+            mensaje: error
+        };
+        console.log(respuesta);
+        return res.status(500).json(respuesta);
+    }   
+}
+
+async function envioCorreoUnicoExamenes(req,res) {
+    
+    try {
+        const  arr = 'Analizado,Enviado'.split(','); 
+        let query={};
+        query={_id:req.params._id,'empresa.empresa_Id':req.params.empresaOrigen,"fichaC.numeroFicha": req.params.numeroFicha, estado: {$ne:'Borrado'}};
+
+        const ficha_ = await ficha.find(query)
+        console.log('Envio ficha_', ficha_)
+
+
+        query={_id: ficha_[0].empresa.empresa_Id, estado: {$ne:'Borrado'}};
+        const empresa_ = await empresa.find(query)
+
+        if (empresa_!=null){
+
+            let mailOptions = {
+                envioEmail:{
+                    emailEnvio: empresa_[0].envioEmail.emailEnvio,
+                    password: empresa_[0].envioEmail.password,
+                    nombreDesde: empresa_[0].envioEmail.nombreDesde,
+                    asunto: empresa_[0].envioEmail.asunto,
+                    tituloCuerpo: empresa_[0].envioEmail.tituloCuerpo,
+                    tituloCuerpoMedio: empresa_[0].envioEmail.tituloCuerpoMedio,
+                    tituloCuerpoPie: empresa_[0].envioEmail.tituloCuerpoPie,
+                    nombreCliente: ficha_[0].fichaC.cliente.nombreFantasia
+                },
+                correoRecepcionCliente: req.params.correoCliente,
+                rutEmpresa: empresa_[0].rutEmpresa,
+                nombrePaciente: ficha_[0].fichaC.nombrePaciente,
+                id_Ficha: ficha_[0].fichaC.id_Ficha
+              };
+            //  console.log('paso email 2222',mailOptions);
+            let respuesta = await mailSendgridTodosExamen.enviar_mail(mailOptions,ficha_, function (err,info) {
+                if(err)
+                    {
+                        respuesta = {
+                            error: true, 
+                            data: '',
+                            codigo: 500, 
+                            mensaje: error
+                        };
+                        return res.status(200).json(respuesta);
+                    }
+            }
+            );
+         //   await elimina.elimina('../../public/pdfs/'+mailOptions.rutEmpresa.slice(0, -2)+'/'+ mailOptions.numFicha+'.pdf');
+            console.log('despues de enviar', respuesta)
+            console.log('despues de enviar codigo', respuesta.codigo)
+            if(respuesta.codigo==500){
+                respuesta = {
+                    error: true, 
+                    data: '',
+                    codigo: 401, 
+                    mensaje: 'Hay Error! No se envió el Email'
+                };
+                return res.status(200).json(respuesta)
+            }
+           
+        }else{
+            respuesta = {
+                error: false, 
+                data: '',
+                codigo: 500, 
+                mensaje: 'Faltan Datos Empresa'
+            };
+            console.log(respuesta);
+            res.status(200).json(respuesta)
+        }
+        //Cambia etado después de enviar el correo
+        const fechaHora_enviado_crea=new Date();
+        for (let a = 0; a < ficha_.length; a++) {
+            console.log('paso graba envio',req.params.usuario)
+            queryModifica={estadoFicha: 'Enviado', 
+            'seguimientoEstado.usuarioEnviado_id':req.params.usuario,
+            'seguimientoEstado.fechaHora_enviado':fechaHora_enviado_crea,
+            'fichaC.examen.internoExterno':'Interno'};
+            await ficha.updateOne({_id: ficha_[a]._id},queryModifica);
+        } 
+
+        respuesta = {
+            error: false, 
+            data: '',
+            codigo: 200, 
+            mensaje: 'ok'
+        };
+        console.log(respuesta);
+        res.status(200).json(respuesta)
+    } catch(error) {
+        respuesta = {
+            error: true, 
+            data: '',
+            codigo: 500, 
+            mensaje: error
+        };
+        console.log(respuesta);
+        return res.status(200).json(respuesta);
+    }   
+}
+
+async function cambiaEstadoFicha(req,res) {
+    try {
+        const fechaHora_analizado=new Date();
+        queryModifica={estadoFicha: 'Analizado', 
+        'seguimientoEstado.usuarioAnalizado_id':req.params.usuario,
+        'seguimientoEstado.fechaHora_analizado':fechaHora_analizado,
+        'fichaC.examen.internoExterno':'Externo'};
+        
+        await ficha.updateOne({_id: req.params._id},queryModifica);
+        respuesta = {
+            error: false, 
+            data: '',
+            codigo: 200, 
+            mensaje: 'ok'
+        };
+        console.log(respuesta);
+        res.status(200).json(respuesta)
+    } catch(error) {
+        respuesta = {
+            error: true, 
+            data: '',
+            codigo: 500, 
+            mensaje: error
+        };
+        console.log(respuesta);
+        return res.status(200).json(respuesta);
+    }   
+}
 //next pasa a la siguiente función
 
  // next pasa a la siguiente función
@@ -983,5 +1346,6 @@ async function buscaId(req,res,next){
 }
 
 module.exports = {
-    crearPropietario,crearFicha,envioCorreo,envioCorreoClienteFinal,envioCorreoSolicitudCliente,actualizarFicha,actualizarFichaEnvia,actualizarFichaCorreoClienteFinal,buscarFicha,eliminarFicha,buscarTodosFicha,buscarTodosFichaPorFecha,buscarTodosFichaVet,buscarTodosFichaPorFechaVet,buscarPacientes,buscaId
+    crearPropietario,crearFicha,envioCorreo,envioCorreoClienteFinal,envioCorreoSolicitudCliente,actualizarFicha,actualizarFichaAnaliza,actualizarFichaCorreoClienteFinal,buscarFicha,eliminarFicha,buscarTodosFicha,buscarTodosFichaPorFecha,buscarTodosFichaVet,buscarTodosFichaPorFechaVet,buscarPacientes,buscaId,
+    armaConsultaXfichaParaEnvio,detalleXfichaParaEnvio,envioCorreoTodosExamenes,envioCorreoUnicoExamenes,cambiaEstadoFicha
 }

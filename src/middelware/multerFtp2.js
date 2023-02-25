@@ -24,7 +24,7 @@ const ftpStorage = require('multer-ftp');
 
 
            const storage = new ftpStorage({
-            basepath: './public_html/pdf/',
+            basepath: './public_html/pdf/interno/',
             connection: ftpClient,
           destination: async function(req, file,options, cb) {
             let query={};
@@ -34,7 +34,7 @@ const ftpStorage = require('multer-ftp');
             const ficha_ =  await ficha.find(query)
             //Verifica si Existe el directorio---Ojo también toma en cuenta el nombre archico como directorio
             console.log('http pdf nombre:',ficha_[0].empresa.rutEmpresa.slice(0, -2));
-            cb(null,'./public_html/pdf/'+ficha_[0].empresa.rutEmpresa.slice(0, -2)+'/'+file.originalname);
+            cb(null,'./public_html/pdf/interno/'+ficha_[0].empresa.rutEmpresa.slice(0, -2)+'/'+file.originalname);
           },
           
         });

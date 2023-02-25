@@ -39,7 +39,7 @@ this.enviar_mail_cliente_Final = (dato) => {
      attachments: [
         { // Use a URL as an attachment
           filename: 'hemograma-'+dato.numFicha+'.pdf',
-          path:  path_.join(__dirname,'../../public/pdfs/'+dato.rutEmpresa.slice(0, -2)+'/'+ dato.numFicha+'.pdf')
+          path:  path_.join(__dirname,'../../public/pdfs/interno/'+dato.rutEmpresa.slice(0, -2)+'/'+ dato.numFicha+'.pdf')
       }
     ]
     };

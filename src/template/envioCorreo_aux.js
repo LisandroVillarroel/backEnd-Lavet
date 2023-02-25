@@ -40,7 +40,7 @@ this.enviar_mail = (dato) => {
      attachments: [
         { // Use a URL as an attachment
           filename: dato.nombreExamen+'-'+dato.numFicha+'.pdf',
-          path:  path_.join(__dirname,'../../public/pdfs/'+dato.rutEmpresa.slice(0, -2)+'/'+ dato.numFicha+'.pdf')
+          path:  path_.join(__dirname,'../../public/pdfs/interno/'+dato.rutEmpresa.slice(0, -2)+'/'+ dato.numFicha+'.pdf')
       }
     ]
     };
