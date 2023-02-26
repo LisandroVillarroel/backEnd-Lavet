@@ -1115,13 +1115,16 @@ async function envioCorreoTodosExamenes(req,res) {
         query={_id: ficha_[0].empresa.empresa_Id, estado: {$ne:'Borrado'}};
         const empresa_ = await empresa.find(query)
 
-        if (empresa_!=null){
+        query={_id: ficha_[0].fichaC.cliente.idCliente, estado: {$ne:'Borrado'}};
+        const cliente_ = await cliente.find(query)
+
+        if (empresa_!=null){ 
 
             let mailOptions = {
                 envioEmail:{
                     emailEnvio: empresa_[0].envioEmail.emailEnvio,
                     password: empresa_[0].envioEmail.password,
-                    nombreDesde: empresa_[0].envioEmail.nombreDesde,
+                    nombreCliente: cliente_[0].nombreFantasia,
                     asunto: empresa_[0].envioEmail.asunto,
                     tituloCuerpo: empresa_[0].envioEmail.tituloCuerpo,
                     tituloCuerpoMedio: empresa_[0].envioEmail.tituloCuerpoMedio,
@@ -1175,8 +1178,7 @@ async function envioCorreoTodosExamenes(req,res) {
             console.log('paso graba envio',req.params.usuario)
             queryModifica={estadoFicha: 'Enviado', 
             'seguimientoEstado.usuarioEnviado_id':req.params.usuario,
-            'seguimientoEstado.fechaHora_enviado':fechaHora_enviado_crea,
-            'fichaC.examen.internoExterno':'Interno'};
+            'seguimientoEstado.fechaHora_enviado':fechaHora_enviado_crea};
             await ficha.updateOne({_id: ficha_[a]._id},queryModifica);
         } 
 
